@@ -1,0 +1,563 @@
+﻿
+@{
+    ViewBag.Title = "Chi tiết sẩn phẩm";
+    Layout = "~/Views/Shared/MasterKH.cshtml";
+}
+
+@using ITech.Models;
+@model Product
+
+
+@section script{
+
+    <script>
+        $(document).ready(function () {
+            $('#btnXemThemCauHinh').click(function (e) {
+                $('.xemthemchitiet').removeAttr("hidden");
+            })
+
+            $('.btnGoToShop').click(function (e) {
+                e.preventDefault();
+                location.href = "/san-pham-cua-hang?ShopID=" + $(this).data('id');
+            })
+        })
+    </script>
+}
+<!-- banner-2 -->
+<div class="page-head_agile_info_w3l">
+
+</div>
+<!-- //banner-2 -->
+<!-- page -->
+<div class="services-breadcrumb">
+    <div class="agile_inner_breadcrumb">
+        <div class="container">
+            <ul class="w3_short">
+                <li>
+                    <a href="/trang-chu">Trang chủ</a>
+                    <i>|</i>
+                </li>
+                <li>@Model.Title</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- //page -->
+<!-- Single Page -->
+<div class="banner-bootom-w3-agileits py-5">
+    <div class="container py-xl-4 py-lg-2">
+        <!-- tittle heading -->
+        <!-- <h3 class="tittle-w3l text-center mb-lg-5 mb-sm-4 mb-3">
+            <span>S</span>ingle
+            <span>P</span>age</h3> -->
+        <!-- //tittle heading -->
+        <div class="row">
+            <div class="col-lg-5 col-md-8 single-right-left py-2">
+                <div class="grid images_3_of_2">
+                    <div class="flexslider">
+                        <ul class="slides">
+                            <li data-thumb="/images/@Model.Image">
+                                <div class="thumb-image">
+                                    <img src="/images/@Model.Image" data-imagezoom="true" class="img-fluid" alt="">
+                                </div>
+                            </li>
+                            @foreach (Gallery g in ViewBag.AnhSP)
+                            {
+                                <li data-thumb="/images/@g.Image">
+                                    <div class="thumb-image">
+                                        <img src="/images/@g.Image" data-imagezoom="true" class="img-fluid" alt="">
+                                    </div>
+                                </li>
+                            }
+
+
+
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-lg-7 single-right-left simpleCart_shelfItem">
+                <h3 class="mb-3">@Model.Title</h3>
+                <hr />
+                <div>
+                    <span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star"></span>
+                    </span> | @*100 Đánh Giá |*@
+                    <span>Đã bán: @(Model.Sold == null ? 0 : Model.Sold)</span>
+                </div>
+                <p class="mb-3">
+                    @if (Model.OldPrice != Model.Price)
+                    {
+                        <del class="mx-2 font-weight-light del_price">@string.Format("{0:#,###}", Model.OldPrice) đ</del>
+                        <span class="item_price">@string.Format("{0:#,###}", Model.Price) đ</span>
+                        <label>-@Math.Round(double.Parse(((Model.OldPrice - Model.Price) / Model.OldPrice * 100).ToString()), 2)% Giảm</label>
+                    }
+                    else
+                    {
+                        <span class="item_price">@string.Format("{0:#,###}", Model.Price) đ</span>
+
+                    }
+                </p>
+                <p class="mb-3">
+                    Có sẵn: <span class="TransportFree">
+                        @Model.Inventory
+                    </span> sản phẩm
+                </p>
+                <input type="hidden" id="txtQty" value="1" />
+                <div class="quantity row">
+                    <div class="quantity-select col-12">
+                        <div class="entry value-minus">&nbsp;</div>
+                        <div class="entry value">
+                            <span>1</span>
+
+                        </div>
+                        <div class="entry value-plus active">&nbsp;</div>
+                    </div>
+                </div>
+
+                <div class="occasion-cart">
+                    <div class="snipcart-details top_brand_home_details item_add single-item hvr-outline-out">
+                        <form action="#" method="post">
+                            <div class="row">
+                                <input type="hidden" name="cmd" value="_cart" />
+                                <input type="hidden" name="add" value="1" />
+                                <input type="hidden" name="business" value=" " />
+                                <input type="hidden" name="item_name" value="Samsung Galaxy J7 Prime" />
+                                <input type="hidden" name="amount" value="200.00" />
+                                <input type="hidden" name="discount_amount" value="1.00" />
+                                <input type="hidden" name="currency_code" value="USD" />
+                                <input type="hidden" name="return" value=" " />
+                                <input type="hidden" name="cancel_return" value=" " />
+                                @{
+                                    User user = Session["user"] as User;
+                                }
+                                @if (user != null)
+                                {
+                                    if (Model.Shop.UserID != (Session["user"] as User).ID)
+                                    {
+                                        if (Model.Shop.Status != HangSo.KhoaByShop)
+                                        {
+                                            <div class="col-md-3 col-6 pr-1">
+                                                <input type="submit" name="submit" data-id="@Model.ID" data-name="@Model.Title" value="Thêm giỏ" class="button btn btnThemGio" />
+                                            </div>
+                                            <div class="col-md-3 col-6 pl-1">
+                                                <input type="submit" name="submit" value="Mua Ngay" class="button btn-buy-now" />
+
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-md-3 col-6 pr-1">
+                                                <input type="submit" name="submit" data-id="@Model.ID" data-name="@Model.Title" value="Thêm giỏ" class="button btn btnThemGio2" />
+                                            </div>
+                                        }
+                                    }
+
+                                }
+                                else
+                                {
+                                    if (Model.Shop.Status != HangSo.KhoaByShop)
+                                    {
+                                        <div class="col-md-3 col-6 pr-1">
+                                            <input type="submit" name="submit" data-id="@Model.ID" data-name="@Model.Title" value="Thêm giỏ" class="button btn btnThemGio" />
+                                        </div>
+                                        <div class="col-md-3 col-6 pl-1">
+                                            <input type="submit" name="submit" value="Mua Ngay" class="button btn-buy-now" />
+
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-md-3 col-6 pr-1">
+                                            <input type="submit" name="submit" data-id="@Model.ID" data-name="@Model.Title" value="Thêm giỏ" class="button btn btnThemGio2" />
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <hr />
+                <div class="single-infoagile row">
+                    <div class="col-md-6">
+                        @if (Model.Shop.Status == HangSo.KhoaByShop)
+                        {
+                            <div class="btn btn-light color-buy-now">Cửa hàng đang tạm đóng bởi người bán!</div>
+                        }
+                    </div>
+                </div>
+                <div class="single-infoagile row">
+                    <div class="col-md-2">
+                        <a href="/san-pham-cua-hang?ShopID=@Model.ShopID">
+                            <img src="/images/commons/@(GetObj.GetSaleman(Model.ShopID).Avatar)" width="80px" class="Avatar">
+                        </a>
+                    </div>
+
+                    <div class="col-md-3">
+                        <p>@(GetObj.GetSaleman(Model.ShopID).ShopName)</p>
+
+                        @if (Model.Shop.Status != HangSo.KhoaByShop)
+                        {
+                            <button class="btn btn-light mt-2 btnLight btnGoToShop" data-id="@Model.ShopID">Xem Shop</button>
+
+                        }
+                    </div>
+                    <div class="col-md-3">
+
+                    </div>
+                    <div class="col-md-4">
+                        <p>Sản Phẩm: <span class="rate">@ViewBag.ProductTotal</span></p>
+                        <p>Đánh Giá: <span class="rate">20--</span></p>
+                        <p>Theo Dõi: <span class="rate">30--</span></p>
+                    </div>
+                </div>
+                <hr />
+                <div>
+                    <p class="my-3">
+                        <i class="far fa-hand-point-right mr-2"></i>
+                        <span class="h4">Chi tiết sản phẩm</span>
+                    </p>
+                    <ul>
+                        @{ int i = 0; bool ShowbtnXemThem = false; string html = "";}
+                        @foreach (Specification x in ViewBag.specs)
+                        {
+
+                            if (i <= 6)
+                            {
+
+                                <li class="mb-1">
+                                    @x.Name :
+                                    @foreach (Product_Spec ps in ViewBag.Pro_spec)
+                                    {
+
+
+                                        if (ps.SpecID == x.ID && ps.ProductID == Model.ID)
+                                        {
+                                            <span>@(ps.Value.Trim()==""?"Không": ps.Value)</span>
+                                        }
+
+                                    }
+                                </li>
+                            }
+                            else
+                            {
+                                ShowbtnXemThem = true;
+                                @**@
+                                html += "<li class='mb-1 xemthemchitiet'>" + x.Name + " : ";
+
+                                foreach (Product_Spec ps in ViewBag.Pro_spec)
+                                {
+
+
+                                    if (ps.SpecID == x.ID && ps.ProductID == Model.ID)
+                                    {
+                                        html += "<span>" + (ps.Value.Trim() == "" ? "Không" : ps.Value) + "</span>";
+                                    }
+
+                                }
+                                html += "</li>";
+                            }
+                            i++;
+                        }
+
+                        <div class="collapse" id="collapseExample">@Html.Raw(html)</div>
+
+                        @*<li class="mb-1">
+                                5.5 inch Full HD Display
+                            </li>
+                            <li class="mb-1">
+                                13MP Rear Camera | 8MP Front Camera
+                            </li>
+                            <li class="mb-1">
+                                3300 mAh Battery
+                            </li>
+                            <li class="mb-1">
+                                Exynos 7870 Octa Core 1.6GHz Processor
+                            </li>*@
+                    </ul>
+                    <p class="my-sm-4 my-3">
+                        <div class="snipcart-details">
+                            @if (ShowbtnXemThem == true)
+                            {
+                                <input type="button" id="btnXemThemCauHinh" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" class="button" value="Xem Thêm Cấu Hình Chi Tiết">
+
+                            }
+                            else
+                            {
+                                <hr />
+                            }
+
+                        </div>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 py-5">
+                <p class="h4">Mô Tả Chi Tiết</p>
+                <div>
+                    @Html.Raw(Model.Description)
+                </div>
+            </div>
+            <hr />
+
+            <!-- danh gia san pham -->
+            <div class="col-md-12 py-5 border">
+                <p class="h4">Đánh Giá Sản Phẩm</p>
+                <div class="bgRate row">
+                    <div class="col-md-5 row">
+                        <div class="col-2">
+                            <div>
+                                5 <span class="fa fa-star star-small checked"></span>
+                            </div>
+                            <div>
+                                4 <span class="fa fa-star star-small checked"></span>
+                            </div>
+                            <div>
+                                3 <span class="fa fa-star star-small checked"></span>
+                            </div>
+                            <div>
+                                2 <span class="fa fa-star star-small checked"></span>
+                            </div>
+                            <div>
+                                1 <span class="fa fa-star star-small checked"></span>
+                            </div>
+
+                        </div>
+                        <div class="col-6">
+                            <div class="w3-light-grey w3-round my-rate" style="height: 10px;">
+                                <div class="w3-container w3-blue w3-round" style="width:50%;height: 10px;"></div>
+                            </div>
+
+                            <div class="w3-light-grey w3-round my-rate" style="height: 10px;">
+                                <div class="w3-container w3-blue w3-round" style="width:25%;height: 10px;"></div>
+                            </div>
+
+                            <div class="w3-light-grey w3-round my-rate" style="height: 10px;">
+                                <div class="w3-container w3-blue w3-round" style="width:20%;height: 10px;"></div>
+                            </div>
+
+                            <div class="w3-light-grey w3-round my-rate" style="height: 10px;">
+                                <div class="w3-container w3-blue w3-round" style="width:15%;height: 10px;"></div>
+                            </div>
+                            <div class="w3-light-grey w3-round my-rate" style="height: 10px;">
+                                <div class="w3-container w3-blue w3-round" style="width:5%;height: 10px;"></div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="font-rate-color">
+                                20 đánh giá
+                            </div>
+                            <div class="font-rate-color">
+                                20 đánh giá
+                            </div>
+                            <div class="font-rate-color">
+                                20 đánh giá
+                            </div>
+                            <div class="font-rate-color">
+                                20 đánh giá
+                            </div>
+                            <div class="font-rate-color">
+                                20 đánh giá
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                    <div class="col-md-7 col-12 row text-center">
+                        <div class="col-12 col-md-6">
+                            <div class="snipcart-details">
+                                <input type="button" class="button" value="Gửi Đánh Giá">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- //danh gia san pham -->
+            <!-- noi dung danh gia -->
+            <div class="col-md-12 rate-content py-4">
+                <!-- noi dung 1 -->
+                <div class="row py-3">
+                    <div class="col-md-1 text-center">
+                        <img src="images/paypal.png" class="Avatar" width="40px">
+                    </div>
+                    <div class="col-md-11">
+                        <span class="h6 font-weight-bold">Đoàn Quang Vinh</span><br />
+                        <span class="fa fa-star checked star-small"></span>
+                        <span class="fa fa-star checked star-small"></span>
+                        <span class="fa fa-star checked star-small"></span>
+                        <span class="fa fa-star checked star-small"></span>
+                        <span class="fa fa-star star-small"></span><br />
+                        <span>
+                            Đệm thoại mua hôm 21/7 mà chụp hình cực xấu k hề nét, đem ra thế giới di động thì cũng giải quyết dc gì.
+                            Pin thì tuột nhanh. Nhạc chuông thì cài 3 bữa lại trở về nhạc chuông mặc định. Ai có ý định mua A92 này thì nên xem xét kĩ lại.
+                        </span><br />
+                        <span class="date">
+                            2018-10-19 16:00
+                        </span>
+                        <div class="repply w3-light-grey mx-3 my-3 p-2">
+                            <span class="h6" style="color: #8b572a;">Phản Hồi Của Người Bán</span><br>
+                            <span>
+                                Pin thì tuột nhanh. Nhạc chuông thì cài 3 bữa lại trở về nhạc chuông mặc định.
+                                Ai có ý định mua A92 này thì nên xem xét kĩ lại.Đệm thoại mua hôm 21/7 mà chụp hình cực xấu k hề nét, đem ra thế giới di động thì cũng giải quyết dc gì.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- //noi dung 1 -->
+                <!-- noi dung 2 -->
+
+                <div class="row py-3">
+                    <div class="col-md-1 text-center">
+                        <img src="images/paypal.png" class="Avatar" width="40px">
+                    </div>
+                    <div class="col-md-11">
+                        <span class="h6 font-weight-bold">Nguyễn Thành Long</span><br />
+                        <span class="fa fa-star checked star-small"></span>
+                        <span class="fa fa-star checked star-small"></span>
+                        <span class="fa fa-star checked star-small"></span>
+                        <span class="fa fa-star checked star-small"></span>
+                        <span class="fa fa-star star-small"></span><br />
+                        <span>
+                            Đệm thoại mua hôm 21/7 mà chụp hình cực xấu k hề nét, đem ra thế giới di động thì cũng giải quyết dc gì.
+                            Pin thì tuột nhanh. Nhạc chuông thì cài 3 bữa lại trở về nhạc chuông mặc định. Ai có ý định mua A92 này thì nên xem xét kĩ lại.
+                        </span><br />
+                        <span class="date">
+                            2018-10-19 16:00
+                        </span>
+                        <div class="repply w3-light-grey mx-3 my-3 p-2">
+                            <span class="h6" style="color: #8b572a;">Phản Hồi Của Người Bán</span><br>
+                            <span>
+                                Pin thì tuột nhanh. Nhạc chuông thì cài 3 bữa lại trở về nhạc chuông mặc định.
+                                Ai có ý định mua A92 này thì nên xem xét kĩ lại.Đệm thoại mua hôm 21/7 mà chụp hình cực xấu k hề nét, đem ra thế giới di động thì cũng giải quyết dc gì.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- //noi dung 2 -->
+                <div class="row py-4">
+                    <div class="col-md-12 text-center snipcart-details">
+                        <input type="button" class="btn btn-light btnLight" value="Xem Tất Cả Đánh Giá">
+                    </div>
+                </div>
+
+            </div>
+            <!-- //noi dung danh gia -->
+            <div class="col-12">
+                <span>
+                    <div class="product-sec1 px-sm-4 px-3 py-sm-5  py-3 mb-4">
+                        <h3 class="heading-tittle text-left font-italic">Các Sản Phẩm Tương Tự</h3>
+                        <div class="row owl-carousel">
+                            @foreach (SearchSanPhamTuongTu_Result x in ViewBag.SPTuongTu)
+                            {
+
+                                <div class="item">
+                                    <div class="col-md-12 product-men mt-5">
+                                        <div class="men-pro-item simpleCart_shelfItem">
+                                            <div class="men-thumb-item text-center">
+                                                <img src="/images/@x.Image" alt="" height="200px" width="100px" style="object-fit: contain;">
+                                                <div class="men-cart-pro">
+                                                    <div class="inner-men-cart-pro">
+                                                        <a href="/chi-tiet-san-pham?id=@x.ID&name=@x.Title" class="link-product-add-cart">Chi tiết</a>
+                                                    </div>
+                                                </div>
+                                                @if (x.OldPrice != x.Price)
+                                                {
+                                                    <span class="product-new-top">-@Math.Round(double.Parse(((x.OldPrice - x.Price) / x.OldPrice * 100).ToString()), 2)%</span>
+
+                                                }
+                                            </div>
+                                            <div class="item-info-product text-left border-top mt-4">
+                                                <h4 class="pt-1">
+                                                    <a href="/chi-tiet-san-pham?id=@x.ID&name=@x.Title">@(x.Title.Length > 28 ? x.Title.Substring(0, 20) + "..." : x.Title)</a>
+                                                    <p>Đã bán: @x.Sold</p>
+                                                    <p>
+                                                        <span class="fa fa-star checked"></span>
+                                                        <span class="fa fa-star checked"></span>
+                                                        <span class="fa fa-star checked"></span>
+                                                        <span class="fa fa-star"></span>
+                                                        <span class="fa fa-star"></span> (180)
+                                                    </p>
+                                                </h4>
+                                                <div class="info-product-price my-2">
+                                                    @if (x.OldPrice != x.Price)
+                                                    {
+                                                        <div><del>@string.Format("{0:#,###}", x.OldPrice)</del></div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <br />
+                                                    }
+
+                                                    <div class="item_price">@string.Format("{0:#,###}", x.Price)</div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        @if (x.ID != Model.ID)
+                                        {
+                                            <a href="/so-sanh-san-pham?product1=@Model.ID&product2=@x.ID&category=@x.CatID">So sánh chi tiết</a>
+
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+
+                </span>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+<!-- //Single Page -->
+<!-- middle section -->
+<div class="join-w3l1 py-sm-5 py-4">
+    <div class="container py-xl-4 py-lg-2">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="join-agile text-left p-4">
+                    <div class="row">
+                        <div class="col-sm-7 offer-name">
+                            <h6>Smooth, Rich & Loud Audio</h6>
+                            <h4 class="mt-2 mb-3">Branded Headphones</h4>
+                            <p>Sale up to 25% off all in store</p>
+                        </div>
+                        <div class="col-sm-5 offerimg-w3l">
+                            <img src="images/off1.png" alt="" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mt-lg-0 mt-5">
+                <div class="join-agile text-left p-4">
+                    <div class="row ">
+                        <div class="col-sm-7 offer-name">
+                            <h6>A Bigger Phone</h6>
+                            <h4 class="mt-2 mb-3">Smart Phones 5</h4>
+                            <p>Free shipping order over $100</p>
+                        </div>
+                        <div class="col-sm-5 offerimg-w3l">
+                            <img src="images/off2.png" alt="" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- middle section -->

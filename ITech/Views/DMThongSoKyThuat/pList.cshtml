@@ -1,0 +1,67 @@
+﻿
+@using ITech.Models;
+@model List<Specification>
+
+<div class="card-block table-border-style">
+    <div class="table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Tên thông số</th>
+                    <th>Danh Mục</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var x in Model)
+                {
+                    <tr>
+                        <th>@x.Name</th>
+                        <th> @(ITech.GetObj.GetCategory(x.CategoryID.Value).Name)</th>
+
+                        <th>
+
+                            <span onclick="return edit('@x.ID', event)" title="Sửa bản ghi @x.Name" class="outer-ellipsis">
+                                <i class="ti-pencil"></i>
+                            </span>
+                            <span class="outer-ellipsis" onclick="return remove('@x.ID', event)" title="Xóa bản ghi @x.Name">
+                                <i class="ti-trash"></i>
+                            </span>
+
+                        </th>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+        @*<div class="row mt-3">
+            <div class="col-4 col-sm-6">
+
+                <div class="left">
+                    <a href=""> <img src="/images/next2.png" class="page-next" style="transform: rotate(180deg);" width="15px" /></a>
+                    <a href="">
+                        <img src="/images/next1.png" class="page-next" style=\"transform: rotate(180deg);\" width="15px" /></a>
+                        <a><input type="text"/></a>
+                        <a href="">
+                            <img src="/images/next1.png" class="page-next" width="15px" /></a>
+                        <a href="">    <img src="/images/next2.png" class="page-next" width="15px" /></a>
+</div>
+
+            </div>
+            <div class="col-4 col-sm-1"></div>
+            <div class="col-4 col-sm-5">
+                <div class="right">
+                    Kết quả hiển thị
+                    <select class="page-next">
+                        <option value="1">1</option>
+                    </select>
+                    / 6
+                </div>
+            </div>
+        </div>*@
+        <div id="ltlPage">@Html.Raw(ViewBag.ltlPage)</div>
+        @*Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+
+            @Html.PagedListPager(Model, page => Url.Action("pList", new { page }))*@
+    </div>
+</div>

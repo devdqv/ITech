@@ -1,0 +1,560 @@
+﻿<#@ template language="C#" debug="true" hostspecific="true"#>
+<#@ include file="EF.Utility.CS.ttinclude"#>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Diagnostics" #>
+
+<#@ output extension=".cs"#>
+<#
+
+// This needs to be set to the .edmx file that you want to process.
+string edmxFile = FindEDMXFileName(); // @"Model1.edmx";
+
+CodeGenerationTools code = new CodeGenerationTools(this);
+MetadataLoader loader = new MetadataLoader(this);
+MetadataTools ef = new MetadataTools(this);
+
+#>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+
+namespace <#= code.VsNamespaceSuggestion() #>
+{
+    public interface IRepository<T>
+    {
+        IUnitOfWork UnitOfWork { get; set; }
+        IQueryable<T> All();
+        IQueryable<T> All(string includes);
+        IQueryable<T> All(List<string> lstInclude);
+        IQueryable<T> Find(Func<T, bool> expression);
+        void Add(T entity);
+        void Delete(T entity);
+        void Save();
+        void AddRange(IEnumerable<T> list);
+        void RemoveRange(IEnumerable<T> list);
+        T FindByPK(params object[] keyValues);
+    }
+}<#
+
+
+EdmItemCollection ItemCollection = loader.CreateEdmItemCollection(edmxFile);
+EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+EntityFrameworkTemplateFileManager fileManager = EntityFrameworkTemplateFileManager.Create(this);
+
+foreach (EntityType entity in ItemCollection.GetItems<EntityType>().OrderBy(e => e.Name))
+{;
+    fileManager.StartNewFile(entity.Name + "Repository.Generated.cs"); #>using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Data;
+
+//Đây là file gen tự động và sẽ bị chỉnh sửa khi cập nhật lại model
+//do đó không sửa file này
+	
+namespace <#= code.VsNamespaceSuggestion() #>
+{   
+	<#=Accessibility.ForType(entity)#> <#=code.SpaceAfter(code.AbstractOption(entity))#>partial class <#=code.Escape(entity)#>Repository
+	{
+		private IRepository<<#=code.Escape(entity)#>> _repository {get;set;}
+		public IRepository<<#=code.Escape(entity)#>> Repository
+		{
+			get { return _repository; }
+			set { _repository = value; }
+		}
+		
+		public <#=code.Escape(entity)#>Repository(IRepository<<#=code.Escape(entity)#>> repository, IUnitOfWork unitOfWork)
+    	{
+    		Repository = repository;
+			Repository.UnitOfWork = unitOfWork; 
+    	}
+		/// <summary>
+        /// Lấy tất cả dữ liệu của bảng
+        /// </summary>        
+        /// <returns>Query đã lấy dữ liệu toàn bộ bảng</returns>
+        /// <modified>
+        /// Author              Date                comments
+        /// VINHQD 10/3/2020
+        /// </modified>
+		public IQueryable<<#=code.Escape(entity)#>> All()
+		{
+			return Repository.All();
+		}
+
+		/// <summary>
+        /// Include để gọi dữ liệu các bảng có quan hệ
+        /// </summary>
+        /// <param name="includes">Danh sách chứa tên các bảng quan hệ cần lấy, cách nhau bằng dấu ","</param>
+        /// <returns>Query đã lấy những bảng quan hệ</returns>
+        /// <modified>
+        /// Author              Date                comments
+        /// VINHQD 10/3
+        /// </modified>
+		public IQueryable<<#=code.Escape(entity)#>> All(string includes)
+		{
+			return Repository.All(includes);
+		}
+		
+		/// <summary>
+        /// Include để gọi dữ liệu các bảng có quan hệ
+        /// </summary>
+        /// <param name="lstInclude">Danh sach chua ten cac bang quan he can lay</param>
+        /// <returns>Query đã lấy những bảng quan hệ</returns>
+        /// <modified>
+        /// Author              Date                comments
+        /// VINHQD 10/3
+        /// </modified>
+		public IQueryable<<#=code.Escape(entity)#>> All(List<string> lstInclude)
+		{
+			return Repository.All(lstInclude);
+		}
+
+		/// <summary>
+        /// Lấy đối tượng <#=code.Escape(entity)#> theo khóa chính
+        /// </summary>        
+        /// <returns><#=code.Escape(entity)#></returns>
+        /// <modified>
+        /// Author              Date                comments
+        /// VINHQD 10/3/2020
+        /// </modified>
+      public <#=code.Escape(entity)#> GetById(<#=code.Escape(entity.Properties[entity.KeyMembers.First().Name].TypeUsage)#> Id)
+		{
+		    try
+			{
+		         ITechEntities context = (ITechEntities)Repository.UnitOfWork.Context;
+                 return context.<#= strReplaceByEntityName(code.Escape(entity))#>.FirstOrDefault(dk => dk.<#= entity.KeyMembers.First().Name #> == Id);			
+			 }
+			 catch(Exception ex) 
+            {
+                throw new Exception(ex.Message + ex.StackTrace + ex.Source);
+			 }
+
+		}
+
+		/// <summary>
+        /// Hàm thêm đối tượng vào database rồi trả về cả đối tượng (chỉ hữu ích khi dùng lazy load)
+        /// </summary>        
+        /// <returns>Đối tượng đã thêm vào database</returns>
+        /// <modified>
+        /// Author              Date                comments
+        /// VINHQD 10/3/2020
+        /// </modified>
+		 public <#=code.Escape(entity)#> SaveReturnToObject(<#=code.Escape(entity)#> obj)
+		{
+		    try
+			{
+		         ITechEntities context = (ITechEntities)Repository.UnitOfWork.Context;
+
+                 context.<#= strReplaceByEntityName(code.Escape(entity))#>.Add(obj);	
+
+				 context.SaveChanges();		
+			 }
+			 
+			catch(Exception ex) 
+            {
+                throw new Exception(ex.Message + ex.StackTrace + ex.Source);
+			 }
+
+			 return obj;
+		}
+		/// <summary>
+        /// Thêm đối tượng <#=code.Escape(entity)#> vào database
+        /// </summary>
+        /// <modified>
+        /// Author              Date                comments
+        /// VINHQD 10/3/2020
+        /// </modified>
+		public void Add(<#=code.Escape(entity)#> entity)
+		{
+			Repository.Add(entity);
+		}
+		/// <summary>
+        /// Xóa đối tượng <#=code.Escape(entity)#>
+        /// </summary>
+        /// <modified>
+        /// Author              Date                comments
+        /// VINHQD 10/3/2020
+        /// </modified>
+		public void Delete(<#=code.Escape(entity)#> entity)
+		{
+			Repository.Delete(entity);
+		}
+		/// <summary>
+        /// Thực hiện commit phiên làm việc để thay đổi dữ liệu trong database liên quan đến đối tượng <#=code.Escape(entity)#>
+        /// </summary>
+        /// <modified>
+        /// Author              Date                comments
+        /// VINHQD 10/3/2020
+        /// </modified>
+		public void Save()
+		{
+			Repository.Save();
+		}
+		/// <summary>
+        /// Thêm một list đối tượng vào cơ sở dữ liệu
+        /// </summary>
+        /// <modified>
+        /// Author              Date                comments
+        /// VINHQD 10/3/2020
+        /// </modified>
+        public void AddRange(IEnumerable<<#=code.Escape(entity)#>> list)
+        {
+            this._repository.AddRange(list);
+        }
+		/// <summary>
+        /// Xóa một list đối tượng trong cơ sở dữ liệu
+        /// </summary>
+        /// <modified>
+        /// Author              Date                comments
+        /// VINHQD 10/3/2020
+        /// </modified>
+        public void RemoveRange(IEnumerable<<#=code.Escape(entity)#>> list)
+        {
+            this._repository.RemoveRange(list);
+        }
+		/// <summary>
+        /// Lấy đối tượng có nhiều khóa chính
+        /// </summary>
+        /// <modified>
+        /// Author              Date                comments
+        /// VINHQD 10/3/2020
+        /// </modified>
+        public <#=code.Escape(entity)#> FindByPK(params object[] keyValues)
+        {
+            return this._repository.FindByPK(keyValues);
+        }
+	}
+}<#	
+	if(!DoesFileExist(entity.Name + "Repository.cs"))
+	{
+		fileManager.StartNewFile(entity.Name + "Repository.cs");
+		#>using System;
+using System.Linq;
+using System.Collections.Generic;
+namespace <#= code.VsNamespaceSuggestion() #>
+{   
+	<#=Accessibility.ForType(entity)#> <#=code.SpaceAfter(code.AbstractOption(entity))#>partial class <#=code.Escape(entity)#>Repository
+	{
+		// Thêm code ở đây
+		// vì code ở file này sẽ không bị ghi đè
+	}
+}<#
+	}
+	else
+	{
+		fileManager.StartNewFile(entity.Name + "Repository.cs");
+		this.Write(OutputFile(entity.Name + "Repository.cs"));
+	}
+}
+
+fileManager.StartNewFile("IUnitOfWork.cs");
+#>using System.Data.Entity;
+
+namespace <#= code.VsNamespaceSuggestion() #>
+{
+	public interface IUnitOfWork
+	{
+		DbContext Context { get; set; }
+		void Save();
+		bool LazyLoadingEnabled { get; set; }
+		bool ProxyCreationEnabled { get; set; }
+		string ConnectionString { get; set; }
+	}
+}<#	fileManager.StartNewFile("RepositoryIQueryableExtensions.cs");
+#>using System.Data.Entity.Core.Objects;
+using System.Linq;
+
+namespace <#= code.VsNamespaceSuggestion() #>
+{
+	public static class RepositoryIQueryableExtensions
+	{
+		public static IQueryable<T> Include<T>
+			(this IQueryable<T> source, string path)
+		{
+			var objectQuery = source as ObjectQuery<T>;
+			if (objectQuery != null)
+			{
+				return objectQuery.Include(path);
+			}
+			return source;
+		}
+	}
+}<# fileManager.StartNewFile("EFRepository.cs");
+#>using System;
+using System.Data.Entity;
+using System.Collections.Generic;
+using System.Data.Entity.Core.Objects;
+using System.Linq;
+using System.Text;
+using System.Data.Entity.Infrastructure;
+
+namespace <#= code.VsNamespaceSuggestion() #>
+{
+    public class EFRepository<T> : IRepository<T> where T : class
+    {
+        public IUnitOfWork UnitOfWork { get; set; }
+        private DbSet<T> _dbSet;
+        private DbSet<T> DbSet
+        {
+            get
+            {
+                if (_dbSet == null)
+                {
+                    _dbSet = UnitOfWork.Context.Set<T>();
+                }
+                return _dbSet;
+            }
+        }
+
+        public virtual IQueryable<T> All()
+        {
+            return DbSet.AsQueryable();
+        }
+
+        public virtual IQueryable<T> All(string includes)
+        {
+            DbQuery<T> Query = UnitOfWork.Context.Set<T>();
+            if (!string.IsNullOrEmpty(includes))
+            {
+                foreach (string includeProperty in includes.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    Query = Query.Include(includeProperty.Trim());
+                }
+            }
+            return Query;
+        }
+
+        public virtual IQueryable<T> All(List<string> lstInclude)
+        {
+            DbQuery<T> Query = UnitOfWork.Context.Set<T>();
+            foreach (string itemInclude in lstInclude)
+                Query = Query.Include(itemInclude.Trim());
+            return Query;
+        }
+
+        public IQueryable<T> Find(Func<T, bool> expression)
+        {
+            return DbSet.Where(expression).AsQueryable();
+        }
+
+        public void Add(T entity)
+        {
+            DbSet.Add(entity);
+        }
+
+        public void Delete(T entity)
+        {
+            DbSet.Remove(entity);
+        }
+
+        public void Save()
+        {
+            UnitOfWork.Save();
+        }
+
+        public void AddRange(IEnumerable<T> list)
+        {
+            this.DbSet.AddRange(list);
+        }
+
+        public void RemoveRange(IEnumerable<T> list)
+        {
+            this.DbSet.RemoveRange(list);
+        }
+
+        public T FindByPK(params object[] keyValues)
+        {
+            return this.DbSet.Find(keyValues);
+        }
+    }
+}<#fileManager.StartNewFile("EFUnitOfWork.cs");
+#>using System;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity;
+using System.Data.Entity.Validation;
+
+namespace <#= code.VsNamespaceSuggestion() #>
+{
+	public class EFUnitOfWork : IUnitOfWork
+	{
+		public DbContext Context { get; set; }
+
+		public EFUnitOfWork()
+		{
+			Context = new <#=code.Escape(container)#>();
+			
+		}
+
+		public void Save()
+		{
+			try
+			{
+				Context.SaveChanges();
+			}
+			catch (DbEntityValidationException e)
+			{
+				string strMsg = string.Empty;
+				foreach (var eve in e.EntityValidationErrors)
+				{
+					 strMsg += string.Format("\nEntity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+						eve.Entry.Entity.GetType().Name, eve.Entry.State);
+					foreach (var ve in eve.ValidationErrors)
+					{
+						strMsg += string.Format( "- Property: \"{0}\", Error: \"{1}\"",
+							ve.PropertyName, ve.ErrorMessage);
+					}
+				}
+                throw new Exception(strMsg);
+			}	
+			
+		}
+		
+		public bool LazyLoadingEnabled
+		{
+			get { return Context.Configuration.LazyLoadingEnabled; }
+			set { Context.Configuration.LazyLoadingEnabled = value;}
+		}
+
+		public bool ProxyCreationEnabled
+		{
+			get { return Context.Configuration.ProxyCreationEnabled; }
+			set { Context.Configuration.ProxyCreationEnabled = value; }
+		}
+		
+		public string ConnectionString
+		{
+			get { return Context.Database.Connection.ConnectionString; }
+			set { Context.Database.Connection.ConnectionString = value; }
+		}
+	}
+}<#	fileManager.Process();
+#>
+
+
+<#+
+
+bool DoesFileExist(string filename)
+{			
+	return File.Exists(Path.Combine(GetCurrentDirectory(),filename));	
+}
+
+string OutputFile(string filename)
+{
+	using(StreamReader sr = new StreamReader(Path.Combine(GetCurrentDirectory(),filename)))
+	{
+		string contents = sr.ReadToEnd();
+		return contents;
+	}
+}
+
+string GetCurrentDirectory()
+{
+	string executingDirectoryName = "";
+	string stackTraceFileName = new StackTrace(true).GetFrame(0).GetFileName();
+	if (String.IsNullOrEmpty(stackTraceFileName))
+	{
+		throw new ArgumentException("No value was specified for the 'directoryName' configuration parameter" +
+			", and we could not figure out the file name from the stack trace (most likely because of running " +
+			"the template with debug='False' specified in the <\u0023@ template \u0023> directive.");
+	}
+	else
+	{		
+		executingDirectoryName = Path.GetDirectoryName(stackTraceFileName);
+	}	
+	return executingDirectoryName;
+}
+
+string FindEDMXFileName()
+{
+	string edmxFile = "";
+				
+	string[] entityFrameworkFiles = Directory.GetFiles(GetCurrentDirectory(), "*.edmx");
+	if(entityFrameworkFiles.Length > 0)
+		edmxFile = entityFrameworkFiles[0];
+	
+	return edmxFile;
+}
+
+string strReplaceByEntityName(string Name)
+{
+	string strName = Name,entityNameReplace=Name;
+	string[] strNguyenAm = new string[5] {"u","e","o","a","i" };
+
+	bool flag = false;
+          
+    if (strName.Length > 1 && Name.Contains('_')==false)
+    {
+        strName = strName.Substring(strName.Length - 1, 1);
+
+        switch (strName.ToLower()) 
+        {
+            case "s" :      entityNameReplace=Name;
+                                break;
+            case "o": 
+					            for (int i = 0; i < strNguyenAm.Length; i++) 
+								{
+									if(strNguyenAm[i]==Name.Substring(Name.Length - 2, 1).ToLower())
+									{
+										flag=true;
+									}
+								}
+
+								if(flag)
+								{
+									entityNameReplace =Name +  "s"; 
+								}
+								else
+								{
+					                entityNameReplace =Name +  "es"; 
+								}
+                                break;
+			case "y": entityNameReplace =Name.Substring(0,Name.Length - 1) +  "ies";
+                                break;
+            default: entityNameReplace = Name +  "s";
+                                break;     
+        }
+    }
+
+	return entityNameReplace;
+}
+
+
+string WriteProperty(string sType)
+{
+	switch (sType.ToLower()) 
+    {
+		case "string": 
+		case "nullable<string>":
+			return "NVarChar";
+		case "system.datetime":
+		case "nullable<system.datetime>":
+			return "DateTime";
+		case "int": 
+		case "number": 
+		case "nullable<int>":
+			return "Int32";
+		case "bool":
+		case "nullable<bool>":
+			return "Boolean";
+		case "double":
+		case "decimal":
+		case "nullable<double>":
+		case "nullable<decimal>":
+			return "Double";
+		case "byte[]":
+		case "nullable<byte[]>":
+			return "Binary";
+		case "real[]":
+		case "nullable<real[]>":
+			return "Double";
+		case "single[]":
+		case "nullable<single[]>":
+			return "Double";
+		case "float[]":
+		case "nullable<float[]>":
+			return "Double";
+	}
+	return sType;
+}
+#>

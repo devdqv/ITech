@@ -1,0 +1,76 @@
+﻿@using ITech.Models;
+@model List<Category>
+@{
+    ViewBag.Title = "Chọn danh mục";
+    Layout = "~/Views/Shared/MasterBanHang.cshtml";
+}
+
+@section script{
+
+    <script>
+        var urlListDMC2 = "/Product/getListDMCap2";
+        var urlProduct = "/Product/Index";
+        $(document).ready(function () {
+            var ItemID = '';
+            var ItemID2 = '';
+            $('#btnNext').attr('disabled', 'disabled');
+            $('#ddlDMCap1').click(function () {
+                ItemID = $(this).val();
+                $.post(urlListDMC2, { ID: $(this).val() }, function (data) {
+                    $('#ddlDMCap2').html(data);
+                })
+                $('#btnNext').attr('disabled', 'disabled');
+
+                $('#ddlDMCap2').click(function () {
+                    ItemID2 = $(this).val();
+                    $('#btnNext').removeAttr('disabled');
+                })
+            })
+
+            $('#btnNext').click(function (e) {
+                e.preventDefault();
+                location.href = '/them-san-pham-new?ShopID=@ViewBag.ShopID&ItemID=' + ItemID + '&ItemID2=' + ItemID2;
+
+            })
+        })
+    </script>
+}
+
+<input type="hidden" id="ItemID" name="id" value="" />
+
+<div class="content">
+
+    <div class="page-header card">
+        <div class="card-block">
+            <div class=" bgWhite py-5 px-5">
+                <div class="row">
+                    <div class="col-12">
+                        <p class="h4 font-weight-bold">THÊM SẢN PHẨM</p>
+                        <p>Vui lòng chọn ngành hàng phù hợp với sản phẩm của bạn</p>
+                    </div>
+                </div>
+
+                <div class="row mt-5">
+                    <div class="col-2 p5 pt-2">Thể Loại <span class="red">*</span> </div>
+                    <div class="col-5 p">
+                        <select id="ddlDMCap1" class="form-control" name="level1" size="6">
+                            @foreach (Category x in Model)
+                            {
+                                <option value="@x.ID">@x.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-5 p5">
+                        <select id="ddlDMCap2" class="form-control" name="level2" size="6"></select>
+                    </div>
+
+                </div>
+
+                <div class="row mt-5">
+                    <button id="btnNext" class="btn btn-danger">Tiếp theo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,165 @@
+﻿@using ITech.Models;
+@{
+    ViewBag.Title = "Website thương mại điện tử ITech";
+    Layout = "~/Views/Shared/MasterKH.cshtml";
+}
+@{
+    
+    ITechEntities db = new ITechEntities();
+}
+
+<div class="ads-grid py-sm-5 py-4">
+    <div class="container-fluid py-xl-4 py-lg-2 px-xl-4 px-lg-2">
+        <!-- tittle heading -->
+        <!--<h3 class="tittle-w3l text-center mb-lg-5 mb-sm-4 mb-3">
+            <span>S</span>ản
+            <span>P</span>hẩm
+            <span>N</span>ổi
+            <span>B</span>ật</h3>-->
+        <!-- //tittle heading -->
+        <div class="row">
+            <!-- product left -->
+            <div class="agileinfo-ads-display col-lg-9">
+                <div class="wrapper">
+                    <!-- first section -->
+                    @foreach (Category c in ViewBag.DanhMucUuTien)
+                    {
+                        <div class="product-sec1 px-sm-4 px-3 py-sm-5  py-3 mb-4">
+                            <h3 class="heading-tittle text-left font-italic">@c.Name nổi bật nhất</h3>
+                            <hr />
+                            <div class="row">
+                                @foreach (SearchSanPhamByDanhMuc_Result p in db.SearchSanPhamByDanhMuc(c.ID).Take(12))
+                                {
+
+                                    <!--product item -->
+                                   
+                                        <div class="col-md-2 col-sm-3 col-4 product-men mt-5">
+                                            <div class="men-pro-item simpleCart_shelfItem">
+                                                <div class="men-thumb-item text-center">
+                                                    <img title="@p.Title" src="/images/@p.Image" alt="" height="200px" width="100px" style="object-fit: contain;">
+                                                    <div class="men-cart-pro">
+                                                        <div class="inner-men-cart-pro">
+                                                            <a title="@p.Title" href="/chi-tiet-san-pham?id=@p.ID&name=@p.Title" class="link-product-add-cart">Chi tiết</a>
+                                                        </div>
+                                                    </div>
+                                                    @if (p.OldPrice != p.Price)
+                                                    {
+                                                        <span class="product-new-top">-@Math.Round(double.Parse(((p.OldPrice - p.Price) / p.OldPrice * 100).ToString()), 2)%</span>
+
+                                                    }
+                                                </div>
+                                                <div class="item-info-product text-left border-top mt-4">
+                                                    <h4 class="pt-1">
+                                                        <div class="my-3"><a title="@p.Title" href="/chi-tiet-san-pham?id=@p.ID&name=@p.Title">@(p.Title.Length > 28 ? p.Title.Substring(0, 27) + "..." : p.Title)</a></div>
+                                                        <p>Đã bán: @p.Sold</p>
+                                                        <p>
+                                                            <span class="fa fa-star checked"></span>
+                                                            <span class="fa fa-star checked"></span>
+                                                            <span class="fa fa-star checked"></span>
+                                                            <span class="fa fa-star"></span>
+                                                            <span class="fa fa-star"></span> (180)
+                                                        </p>
+                                                    </h4>
+                                                    <div class="info-product-price my-2">
+                                                        @if (p.OldPrice != p.Price)
+                                                        {
+                                                            <div><del>@string.Format("{0:#,###}", p.OldPrice) đ</del></div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <br />
+                                                        }
+
+                                                        <div class="item_price">@string.Format("{0:#,###}", p.Price) đ</div>
+                                                    </div>
+                                                   
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    
+                                }
+                            </div>
+                        </div>
+                    }
+                    <!-- //first section -->
+                    <!-- third section -->
+                    @*<div class="product-sec1 product-sec2 px-sm-5 px-3">
+                            <div class="row">
+                                <h3 class="col-md-4 effect-bg">Summer Carnival</h3>
+                                <p class="w3l-nut-middle">Get Extra 10% Off</p>
+                                <div class="col-md-8 bg-right-nut">
+                                    <img src="images/image1.png" alt="">
+                                </div>
+                            </div>
+                        </div>*@
+                    <!-- //third section -->
+
+                </div>
+            </div>
+            <!-- //product left -->
+            <!-- product right -->
+            <div class="col-lg-3 mt-lg-0 mt-4 p-lg-0">
+                <div class="side-bar p-sm-4 p-3">
+                    <div class="search-hotel border-bottom py-2">
+                        <h3 class="agileits-sear-head mb-3">Tìm kiếm..</h3>
+                        <form action="#" method="post">
+                            <input type="search" id="fieldSearch" value="@ViewBag.fieldSearch" placeholder="Nhập tên sản phẩm ..." name="search">
+                            <input id="btnSearchLeft" type="submit" value=" ">
+                        </form>
+                    </div>
+                    <!-- price -->
+                    <div class="range border-bottom py-2">
+                        <h3 class="agileits-sear-head mb-3">Khoảng giá</h3>
+                        <div class="w3l-range">
+                            <ul>
+                                <li>
+                                    <a href="javascript:;" class="filterGia" onclick="return SearchByGia('0-2000000')">Dưới 2 triệu</a>
+                                </li>
+                                <li class="my-1">
+                                    <a href="javascript:;" class="filterGia" onclick="return SearchByGia('2000000-5000000')">Từ 2 đến 5 triệu</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;" class="filterGia" onclick="return SearchByGia('5000000-10000000')">Từ 5 đến 10 triệu</a>
+                                </li>
+                                <li class="my-1">
+                                    <a href="javascript:;" class="filterGia" onclick="return SearchByGia('10000000-20000000')">Từ 10 đến 20 triệu</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;" class="filterGia" onclick="return SearchByGia('20000000')">Lớn hơn 20 triệu</a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- //price -->
+                    <!-- best seller -->
+                    <div class="f-grid py-2">
+                        <h3 class="agileits-sear-head mb-3"></h3>
+                        <div class="box-scroll">
+                            <div class="scroll">
+                                @foreach (Product p in ViewBag.productQC)
+                                {
+                                    <div class="row my-2">
+                                        <div class="col-lg-3 col-sm-2 col-3 left-mar">
+                                            <img src="images/@p.Image" alt="" class="img-fluid">
+                                        </div>
+                                        <div class="col-lg-9 col-sm-10 col-9 w3_mvd">
+                                            <a href="/chi-tiet-san-pham?id=@p.ID&name=@p.Title" title="@p.Title">@p.Title</a>
+                                            <a href="/chi-tiet-san-pham?id=@p.ID&name=@p.Title" class="price-mar mt-2"><del>@string.Format("{0:#,###}", p.OldPrice)</del> @string.Format("{0:#,###}", p.Price)</a>
+                                        </div>
+                                    </div>
+                                }
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- //best seller -->
+                </div>
+                <!-- //product right -->
+            </div>
+        </div>
+    </div>
+</div>
+

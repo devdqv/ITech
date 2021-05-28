@@ -1,0 +1,369 @@
+﻿@using ITech.Models;
+@{
+    ViewBag.Title = "Giỏ hàng";
+    Layout = "~/Views/Shared/MasterKH.cshtml";
+}
+@{
+    var address = ViewBag.Address as List<AddressDeliver>;
+    AddressDeliver adDefault = null;
+    if (address != null)
+    {
+        adDefault = address.SingleOrDefault(x => x.Default == 1);
+    }
+
+}
+@section script{
+    <script>
+        function CalculatorMoney() {
+            var total = 0;
+            $('.checkboxChild:checked').each(function () {
+                var thanhtien = $(this).data('thanhtien');
+                total += thanhtien;
+            });
+
+            $('.MoneyTotal').text('₫' + formatMoney(total));
+            $('.MoneyTotal').data('mtotal', (total));
+
+            $('.totalMoney').text('₫' + formatMoney(total));
+            $('.totalMoney').data('mtotal', (total));
+
+        }
+        $(document).ready(function () {
+
+
+            CalculatorMoney()
+
+            $('.chkAllProduct').click(function () {
+                var shopid = $(this).data('shop');
+                $('.chkProductDetail-' + shopid).prop("checked", $(this).is(':checked'));
+
+
+            })
+            $('.chkAllProduct').click(function () { CalculatorMoney() })
+            $('.checkboxChild').click(function () { CalculatorMoney() })
+
+
+            $('.btnDatHang').click(function (e) {
+                e.preventDefault();
+                if ($('#hdDiaChiNhanHang').val().trim() == "") {
+                    createMessageBox("", "Bạn chưa chọn địa chỉ nhận hàng", true);
+                    return false;
+                }
+
+                var ArrID = '';
+                $('.checkboxChild:checked').each(function () {
+                    ArrID += $(this).val() + ';';
+                })
+                if (ArrID == '') {
+                    createMessageBoxWarning("Thông báo", "Bạn cần chọn sản phẩm trước khi thanh toán");
+                    return false;
+                }
+                $('#itemID').val(ArrID);
+
+                location.href = "/thanh-toan?ArrID=" + $('#itemID').val() + "&DiaChiNhanHang=" + $('#hdDiaChiNhanHang').val();
+
+
+            })
+
+            $('.btnThemDiaChiMoi').click(function (e) {
+                e.preventDefault();
+                $.get("/Cart/ThemAddressDelivery", function (d) {
+                    openModal("Thêm mới địa chỉ nhận hàng", d);
+                })
+            })
+            $('.setupAddress').click(function (e) {
+                e.preventDefault();
+                $.get("/Cart/EditAddressDelivery", { id: $(this).data('id') }, function (d) {
+                    openModal("Thiết lập địa chỉ nhận hàng", d);
+                })
+            })
+
+            $('.btnSetDiaChi').click(function (e) {
+                e.preventDefault();
+                $('#hdDiaChiNhanHang').val($('input[name="radAdress"]:checked').val());
+                $("#lstDiaChiGiaoHang").toggle();
+
+                $.ajax({
+                    url: '/Cart/GetAddressDelivery',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { id: $('#hdDiaChiNhanHang').val() },
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (d) {
+                        console.log(d)
+                        $('.TenVaSDT').html(d.Data.Cus_name + " (" + d.Data.Cus_phone + ")");
+                        $('.DiaChi').html(d.Data.ApartmentNumber + ", " + d.Data.Ward + ", " + d.Data.District + ", " + d.Data.City);
+                        $('.DChiMacDinh').html(d.Data.Default == 1 ? "Mặc định" : "");
+                        $('#hdDiaChiNhanHang').val(d.Data.ID);
+
+                    }
+                });
+                //$.get("/Cart/GetAddressDelivery", { id: $('#hdDiaChiNhanHang').val() }, function (d) {
+                //    console.log(d)
+                //    $('.TenVaSDT').html(d.Data.Cus_name + "(" + d.Data.Cus_phone + ")");
+                //})
+            })
+
+            $('#changeAddress').click(function (e) {
+                e.preventDefault();
+                $("#lstDiaChiGiaoHang").toggle();
+            })
+
+
+        })
+    </script>
+}
+
+<div class="services-breadcrumb">
+    <div class="agile_inner_breadcrumb">
+        <div class="container">
+            <ul class="w3_short">
+                <li>
+                    <a href="/">Trang chủ</a>
+                    <i>|</i>
+                </li>
+                <li>Giỏ Hàng</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- //page -->
+<!-- checkout page -->
+<input type="hidden" id="itemID" value="" />
+
+@if (adDefault == null)
+{
+    <input type="hidden" id="hdDiaChiNhanHang" value="" />
+
+}
+else
+{
+    <input type="hidden" id="hdDiaChiNhanHang" value="@adDefault.ID" />
+
+}
+<div class="privacy py-sm-5 py-4">
+    <div class="container py-xl-4 py-lg-2">
+        <!-- tittle heading -->
+        <h3 class="tittle-w3l text-left mb-lg-5 mb-sm-4 mb-3">
+            <p class="h5">Giỏ Hàng</p>
+        </h3>
+        <div class="row my-3" style="width: 100%;">
+
+            <div class="col-12 location-text my-3">Địa chỉ nhận hàng</div>
+            @if (adDefault != null)
+            {
+                <div class="col-3 h6 TenVaSDT">@adDefault.Cus_name (@adDefault.Cus_phone)</div>
+                <div class="col-6 h6 DiaChi">@adDefault.ApartmentNumber, @adDefault.Ward, @adDefault.District, @adDefault.City</div>
+                <div class="col-2 DChiMacDinh">@(adDefault.Default == 1 ? "Mặc định" : "")</div>
+                <div class="col-1"><a href="javascript:;" id="changeAddress">Thay đổi</a></div>
+            }
+            else
+            {
+                <div class="col-3 h6 TenVaSDT"></div>
+                <div class="col-6 h6 DiaChi"></div>
+                <div class="col-2 DChiMacDinh"></div>
+                <div class="col-1"></div>
+                <div class="row my-3" style="width: 100%;">
+
+                    <div class="col-12 text-right">
+                        <a href="javascript:;" id="changeAddress">Chọn địa chỉ nhận hàng</a>
+                        @if (address == null)
+                        {
+                            <button class="btn btn-warning white btnThemDiaChiMoi"><i class="fa fa-plus"></i>Thêm địa chỉ nhận hàng</button>
+
+                        }
+                    </div>
+
+
+                </div>
+            }
+
+
+
+        </div>
+
+        @if (address != null)
+        {
+            <div id="lstDiaChiGiaoHang" class="collapse bg-light py-3 px-3">
+
+                <div class="row my-3" style="width: 100%;">
+
+                    <div class="col-12 text-right">
+                        <button class="btn btn-warning white btnThemDiaChiMoi"><i class="fa fa-plus"></i>Thêm địa chỉ mới</button>
+                    </div>
+
+
+                </div>
+                @foreach (AddressDeliver x in address)
+                {
+                    <div class="row my-3" style="width: 100%;">
+                        <div class="col-4 h6">
+                            @if (x.Default == 1)
+                            {
+                                <input name="radAdress" type="radio" value="@x.ID" checked="checked" />
+                            }
+                            else
+                            {
+                                <input name="radAdress" value="@x.ID" type="radio" />
+                            } @x.Cus_name (@x.Cus_phone)
+                        </div>
+                        <div class="col-4 h6">@x.ApartmentNumber, @x.Ward, @x.District, @x.City</div>
+                        <div class="col-2">@(x.Default == 1 ? "Mặc định" : "")</div>
+                        <div class="col-2"><a href="#" class="setupAddress" data-id="@x.ID">Thiết lập</a></div>
+
+
+                    </div>
+                    <hr />
+                }
+
+                <div class="row">
+                    <div class="col-12">
+                        <button class="btn btn-secondary btnSetDiaChi">Hoàn thành</button>
+                    </div>
+                </div>
+
+            </div>
+        }
+        <div class="row bg-light my-3" style="width: 100%;">
+
+        </div>
+        <!-- //tittle heading -->
+        <div class="checkout-right">
+
+            <div class="table-responsive">
+                <table class="timetable_sub">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th style="width:30%">Sản phẩm</th>
+                            <th>Số lượng</th>
+                            <th>Đơn giá</th>
+                            <th>Số tiền</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (Shop s in ViewBag.Shops)
+                        {
+                            <tr class="productHead-@s.ID">
+                                <td colspan="1"><input type="checkbox" class="chkAllProduct" data-shop="@s.ID" /></td>
+                                <td colspan="6"><h5>@s.ShopName</h5></td>
+                            </tr>
+                            foreach (MyCart x in ViewBag.Cart)
+                            {
+                                if (x.Product.ShopID == s.ID)
+                                {
+
+                                        <tr class="rem1 product-@x.ID product-@s.ID">
+                                           
+                                            <td class="invert"><input type="checkbox" class="checkboxChild chkProductDetail-@s.ID iTemCart-@x.ID" data-thanhtien="@(x.Product.Price*x.Quantity)" data-sl="@x.Quantity" value="@x.ID" /></td>
+                                            <td class="invert-image">
+                                                <a href="single.html">
+                                                    <div class="row">
+                                                        <div class="col-3"><img src="/images/@x.Product.Image"></div>
+                                                        <div class="col-9">@x.Product.Title</div>
+                                                    </div>
+
+                                                </a>
+                                            </td>
+                                            <td class="invert text-center">
+                                                <div class="quantity">
+                                                    <div class="quantity-select">
+                                                        <div data-id="@x.ID" class="entry value-minus">&nbsp;</div>
+                                                        <div class="entry value">
+                                                            <span>@x.Quantity</span>
+                                                        </div>
+                                                        <div data-id="@x.ID" class="entry value-plus active">&nbsp;</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="invert text-center"><p3><del style="opacity:0.5;">₫@string.Format("{0:#,###}", x.Product.OldPrice)</del></p3> <p3>₫@string.Format("{0:#,###}", x.Product.Price)</p3></td>
+                                            <td class="invert text-center"><span class="txtThanhTien-@x.ID" data-price="@(x.Product.Price*x.Quantity)">₫@string.Format("{0:#,###}", x.Quantity * x.Product.Price)</span></td>
+                                            <td class="invert text-center">
+                                                <i class="fa fa-remove h1 removeProductCart" data-id="@x.ID"></i>
+                                            </td>
+                                        </tr>
+                                    }
+
+                                }
+                            }
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="checkout-left">
+                <div class="address_form_agile mt-sm-5 mt-4">
+
+                    <hr />
+                    <div style="width: 100%;" class="row ml-0">
+                        <div class="col-8"></div>
+                        <div class="col-2">
+                            @*<p class="p3">Tổng Tiền Hàng:</p>
+                                <p class="p3">Phí Vận Chuyển:</p>*@
+                            <p class="p3">Tổng Thanh Toán <fieldset class="TotalSP"></fieldset></p>
+                        </div>
+                        <div class="col-2">
+                            <p hidden class="p3 MoneyTotal" id="MoneyTotal" data-mtotal="0đ">₫0</p>
+                            <p hidden class="p3">₫0</p>
+                            <p class="h5 totalMoney" style="color: #F45C5D;">₫0</p>
+                        </div>
+                    </div>
+                    <hr />
+                    <div style="width: 100%;" class="row">
+                        <div class="col-8"></div>
+                        <div class="col-4 row">
+                            <div class="checkout-right-basket checkout col-12">
+                                <a href="#" class="btn-buy-now btnDatHang col-12 text-center">
+                                    <i class="fa fa-check-circle-o"></i> Mua hàng
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- //checkout page -->
+    <!-- middle section -->
+    <div class="join-w3l1 py-sm-5 py-4">
+        <div class="container py-xl-4 py-lg-2">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="join-agile text-left p-4">
+                        <div class="row">
+                            <div class="col-sm-7 offer-name">
+                                <h6>Smooth, Rich & Loud Audio</h6>
+                                <h4 class="mt-2 mb-3">Branded Headphones</h4>
+                                <p>Sale up to 25% off all in store</p>
+                            </div>
+                            <div class="col-sm-5 offerimg-w3l">
+                                <img src="images/off1.png" alt="" class="img-fluid">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mt-lg-0 mt-5">
+                    <div class="join-agile text-left p-4">
+                        <div class="row ">
+                            <div class="col-sm-7 offer-name">
+                                <h6>A Bigger Phone</h6>
+                                <h4 class="mt-2 mb-3">Smart Phones 5</h4>
+                                <p>Free shipping order over $100</p>
+                            </div>
+                            <div class="col-sm-5 offerimg-w3l">
+                                <img src="images/off2.png" alt="" class="img-fluid">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- middle section -->

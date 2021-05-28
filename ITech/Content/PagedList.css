@@ -1,0 +1,28 @@
+﻿.pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+}
+    /* thiết lập style cho class active */
+    .pagination a.active {
+        background-color: dodgerblue;
+        color: white;
+    }
+    .pagination .active {
+        background-color: #edb8f7;
+        color: white;
+    }
+    /* thêm màu nền khi người dùng hover vào class không active */
+    .pagination a:hover:not(.active) {
+        background-color: #ddd;
+    }
+
+#ltlPage {
+    
+}
+.bottom-pager {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}

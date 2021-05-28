@@ -1,0 +1,161 @@
+﻿@using ITech.Models;
+
+@{Layout = null; }
+
+<script>
+    $(document).ready(function () {
+
+        $('.btn').click(function (e) { e.preventDefault(); })
+        $('.btnXacNhanDon').click(function (e) {
+            e.preventDefault();
+            var OrderCode = $(this).data('id');
+            createMessageBoxConfirm2("Thông báo", "Xác nhận đơn hàng: " + OrderCode, function (confirm) {
+                if (confirm) {
+                    $.post("/ManageOrder/Confirm", { stt: 1, OrderCode: OrderCode }, function (d) {
+                        if (d.Error) {
+                            createMessageBox("", d.Message, d.Error);
+                        }
+                        else {
+                            createMessageBoxUrl("", d.Message, d.Error, location.href);
+
+                        }
+                    })
+                }
+
+
+            })
+            return false;
+        })
+        $('.btnHuyDon').click(function (e) {
+            e.preventDefault();
+            var OrderCode = $(this).data('id');
+            createMessageBoxConfirm("Thông báo", "Xác nhận hủy đơn đơn hàng: " + OrderCode, function (confirm) {
+                if (confirm) {
+                    $.post("/ManageOrder/Confirm", { stt: -1, OrderCode: OrderCode }, function (d) {
+                        if (d.Error) {
+                            createMessageBox("", d.Message, d.Error);
+                        }
+                        else {
+                            createMessageBoxUrl("", d.Message, d.Error, location.href);
+
+                        }
+                    })
+                }
+
+
+            })
+            return false;
+        })
+    })
+</script>
+
+
+
+<div class="tab-content">
+    <div class="tab-pane active" id="choduyet" role="tabpanel">
+        @if ((ViewBag.lstModel as List<OrderModel>).Count() > 0)
+        {
+            foreach (OrderModel order in ViewBag.lstModel)
+            {
+                <div class="card-block mt-3">
+                    <div class="col-12 ">
+                        <p class="h5 color-add-cart">Mã ĐH: @order.order.OrderCode</p>
+                        <p class="h6">Thời gian đặt: @order.order.OrderDate.Value.ToString("dd/MM/yyyy HH:mm:ss") </p>
+                        <p class="h6">Trạng thái: @(HangSo.ChoXacNhan == order.order.Status ? "Chưa xác nhận" : HangSo.DaXacNhan == @order.order.Status ? "Đã xác nhận" : HangSo.DaBiHuy == @order.order.Status?"Đã bị hủy": "")</p>
+                        @if (HangSo.DaBiHuy == order.order.Status)
+                        {
+                            <p class="h6">Lý do hủy: <span class="color-buy-now">@order.order.CancelNote</span></p>
+                        }
+                        <div>Người nhận : @order.order.Receiver (@(order.order.Phone))</div>
+                        <div>Gửi tới : @order.order.Address</div>
+                        <br />
+                        @if (order.order.Status == HangSo.ChoXacNhan)
+                        {
+                            <button class="btn btn-success btnXacNhanDon" data-id="@order.order.OrderCode">Xác nhận đơn hàng</button>
+                            <button class="btn btn-danger btnHuyDon" data-id="@order.order.OrderCode">Hủy đơn hàng</button>
+                        }
+
+                    </div>
+                    <div class="col-12 my-3">
+
+
+
+                        <div class="row btn-danger mx-0 mt-2">
+                            <div class="col-4 my-1 pt-2">
+                                <p class="p5 color-white">Sản Phẩm</p>
+                            </div>
+                            <div class="col-2 my-1 pt-2">
+                                <p class="p5 color-white">Số lượng</p>
+                            </div>
+                            <div class="col-2 my-1 pt-2">
+                                <p class="p5 color-white">Giá</p>
+                            </div>
+                            <div class="col-2 my-1 pt-2">
+                                <p class="p5 color-white">Thành tiền</p>
+                            </div>
+
+
+                        </div>
+                        <div class="border px-3">
+
+                            @{ double total = 0.0;}
+                            @foreach (var p in order.orderItems)
+                            {
+                                var product = @GetObj.GetProduct(p.ProductID.Value);
+                                <!-- product -->
+                                <div class="row py-1">
+                                    <div class="col-4 my-1 pt-2">
+                                        <div class="row">
+
+                                            <div class="col-4">
+                                                <img src="/images/@product.Image" alt="" width="100%">
+                                            </div>
+                                            <div class="col-8">
+                                                <p class="p5">@product.Title</p>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-2 my-1 pt-2">
+                                        <p class="p5">@p.Quantity</p>
+                                    </div>
+                                    <div class="col-2 my-1 pt-2">
+                                        <p class="p5">@string.Format("{0:#,###}", product.Price) đ</p>
+                                    </div>
+
+                                    <div class="col-2 my-1 pt-2">
+                                        <p class="p5">@string.Format("{0:#,###}", product.Price * p.Quantity) đ</p>
+                                    </div>
+                                    @{total += product.Price.Value * p.Quantity.Value;}
+                                </div>
+
+                                <hr />
+                                <!-- product -->
+
+                            }
+
+                            <div class="row py-1">
+                                <div class="col-4 my-1 pt-2">
+                                    Tổng tiền: <span class="red">₫@string.Format("{0:#,###}", total)</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+                <hr />
+            }
+            <div class="mt-3">
+                <div id="ltlPage">@Html.Raw(ViewBag.ltlPage)</div>
+            </div>
+        }
+        else
+        {
+            <div class="text-center">Không có dữ liệu</div>
+        }
+    </div>
+
+</div>

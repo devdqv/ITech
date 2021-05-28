@@ -1,0 +1,65 @@
+﻿
+@{
+    ViewBag.Title = "Trang bán hàng";
+    Layout = "~/Views/Shared/MasterBanHang.cshtml";
+}
+
+<div id="content">
+    <!-- Page-header start -->
+    <div class="page-header card">
+        <div class="card-block">
+            <div class="row bgWhite">
+                <div class="col-12 py-3">
+                    <div class="h5 font-weight-bold">Danh Sách Những Việc Cần Làm</div>
+                </div>
+                <div class="col-12 py-3 text-center">
+                    <div class="row py-2">
+                        <div class="col-3 row border-right">
+                            <div class="col-3"></div>
+                            <a href="/danh-sach-cua-hang-co-don-hang?type=@HangSo.ChoXacNhan" class="col-6 m-4 bgFAFAFA">
+                                  <div class="h3 color-buy-now">@ViewBag.ChoXacNhan</div>
+                                <div>Chờ Xác Nhận</div>
+                            </a>
+                            <div class="col-3"></div>
+                        </div>
+                      
+                        <div class="col-3 row border-right">
+                            <div class="col-3"></div>
+                            <a href="/danh-sach-cua-hang-co-don-hang?type=@HangSo.DaXacNhan" class="col-6 m-4 bgFAFAFA">
+                                  <div class="h3 color-buy-now">@(ViewBag.DaXacNhan)</div>
+                                <div>Đã Xử Lý</div>
+                            </a>
+                            <div class="col-3"></div>
+                        </div>
+
+
+                        <div class="col-3 row border-right">
+                            <div class="col-3"></div>
+                            <a href="/danh-sach-cua-hang-co-don-hang?type=@HangSo.DaBiHuy" class="col-6 m-4 bgFAFAFA">
+                                  <div class="h3 color-buy-now">@ViewBag.DaHuy</div>
+                                <div>Đơn Hủy</div>
+                            </a>
+                            <div class="col-3"></div>
+                        </div>
+                        <div class="col-3 row border-right">
+                            <div class="col-3"></div>
+                            <a href="/danh-sach-cua-hang-co-san-pham?type=@HangSo.DaKhoa" class="col-6 m-4 bgFAFAFA">
+                                <div class="h3 color-buy-now">@(ViewBag.SPBiKhoa)</div>
+                                <div>Sản Phẩm Bị Khóa</div>
+                            </a>
+                            <div class="col-3"></div>
+                        </div>
+                        <div class="col-3 row border-right">
+                            <div class="col-3"></div>
+                            <a href="/danh-sach-cua-hang-co-san-pham?type=@HangSo.HetHang" class="col-6 m-4 bgFAFAFA">
+                                  <div class="h3 color-buy-now">@(ViewBag.SPHetHang)</div>
+                                <div>Sản Phẩm Hết Hàng</div>
+                            </a>
+                            <div class="col-3"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

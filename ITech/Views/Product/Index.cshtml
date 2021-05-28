@@ -1,0 +1,305 @@
+﻿@using ITech.Models;
+@{
+    ViewBag.Title = "Thêm mới sản phẩm";
+    Layout = "~/Views/Shared/MasterBanHang.cshtml";
+}
+
+@section script{
+    <script>
+        var urlPostAction = "/Product/AddProduct";
+
+        $(document).ready(function () {
+                CKEDITOR.replace('ckeditor');
+            $('.img-uploadA').click(function (e) {
+                e.preventDefault();
+                $("#fileuploadA").click();
+            });
+            $('.img-upload1').click(function (e) {
+                e.preventDefault();
+                $("#fileupload1").click();
+            });
+            $('.img-upload2').click(function (e) {
+                e.preventDefault();
+                $("#fileupload2").click();
+            });
+            $('.img-upload3').click(function (e) {
+                e.preventDefault();
+                $("#fileupload3").click();
+            });
+            $('.img-upload4').click(function (e) {
+                e.preventDefault();
+                $("#fileupload4").click();
+            });
+            $('.img-upload5').click(function (e) {
+                e.preventDefault();
+                $("#fileupload5").click();
+            });
+            $('#btnSubmit').click(function (e) {
+                e.preventDefault();
+                if ($('#FormMaster').valid()) {
+                    var lstTS = '';
+                    $('textarea[name*="ddlTSKT-"]').each(function () {
+                        lstTS += $(this).data("id") + "=" + $(this).val() + ";";
+
+                    })
+                    $('#lstTSKT').val(lstTS);
+                    var data = new FormData();
+                    var fileA = $('#fileuploadA').get(0).files;
+                    if (fileA.length == 0) {
+                        createMessageBoxWarning("", "Bạn phải chọn ảnh đại diện cho sản phẩm");
+                        return false;
+                    }
+                    var file1 = $('#fileupload1').get(0).files;
+                    var file2 = $('#fileupload2').get(0).files;
+                    var file3 = $('#fileupload3').get(0).files;
+                    var file4 = $('#fileupload4').get(0).files;
+                    var file5 = $('#fileupload5').get(0).files;
+
+                    data.append('fileuploadA', fileA[0]);
+                    data.append('fileupload1', file1[0]);
+                    data.append('fileupload2', file2[0]);
+                    data.append('fileupload3', file3[0]);
+                    data.append('fileupload4', file4[0]);
+                    data.append('fileupload5', file5[0]);
+                    $('#MotaSP').val(CKEDITOR.instances.ckeditor.getData());
+                    AppendArrFormData($("#FormMaster").find("input,textarea,select,hidden").not("#__VIEWSTATE,#__EVENTVALIDATION, #__VIEWSTATEGENERATOR").serializeArray(), data);
+                    //$.post(urlPostAction, data, function (data) {
+
+                    //})
+                    $.ajax({
+                        url: urlPostAction,
+                        type: 'POST',
+                        data: data,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        async: false,
+                        success: function (data) {
+                            //createMessageBox("", data.Message, data.Error);
+                           createMessageBoxUrl("", data.Message, data.Error, "/danh-sach-san-pham?ShopID=@ViewBag.ShopID");
+                        }
+                    });
+                }
+            })
+
+        })
+    </script>
+}
+    <div id="content">
+        <input type="hidden" id="lstTSKT" name="lstTSKT" />
+        <input type="hidden" id="level1" name="level1" value="@ViewBag.itemID" />
+        <input type="hidden" id="level2" name="level2" value="@ViewBag.itemID2" />
+        <input type="hidden" id="ShopID" name="ShopID" value="@ViewBag.ShopID" />
+        <input type="hidden" id="MotaSP" name="MotaSP" />
+
+        <!-- Page-header start -->
+        <div class="page-header card">
+            <div class="card-block">
+                <div class=" bgWhite py-5 px-5">
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="h4 font-weight-bold">Thông tin cơ bản</p>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-2 p5 pt-2">Tên sản phẩm <span class="red">*</span></div>
+                        <div class="col-10 p5"><input placeholder="Nhập vào" type="text" id="TenSP" required class="required form-control" /></div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-2 p5 pt-2">Mô tả sản phẩm <span class="red">*</span></div>
+                        <div class="col-10 p5"><textarea id="ckeditor"></textarea></div>
+                    </div>
+                    @*<div class="row mt-5">
+                        <div class="col-2 p5 pt-2">Thương hiệu <span class="red">*</span></div>
+                        <div class="col-10 p5">
+                            <div class="dropdown">
+                                <select required name="ddlBrand" class="form-control">
+                                    <option value="">--Chọn thương hiệu--</option>
+                                    @foreach (Brand x in ViewBag.Brands)
+                                    {
+                                        <option value="@x.ID">@x.Name</option>
+                                    }
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>*@
+                    @foreach (Specification x in ViewBag.specs)
+                    {
+                        <div class="row mt-5">
+                            <div class="col-2 p5 pt-2">@x.Name</div>
+                            <div class="col-10 p5">
+                                <div class="dropdown">
+                                    <textarea data-id="@x.ID" name="ddlTSKT-@x.ID" class="form-control" placeholder="Nhập @x.Name ..."></textarea>
+                                       
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+        <div class="page-header card">
+            <div class="card-block">
+                <div class="bgWhite my-5 py-5 px-5">
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="h4 font-weight-bold">Thông tin bán hàng</p>
+                        </div>
+                    </div>
+                    <div class="row my-5">
+                        <div class="col-2 p5 pt-2">Giá cũ <span class="red">*</span></div>
+                        <div class="col-10 p5"><input id="GiaCu" required type="text" class="form-control currency" /></div>
+                    </div>
+                    <div class="row my-5">
+                        <div class="col-2 p5 pt-2">Giá mới <span class="red">*</span></div>
+                        <div class="col-10 p5"><input required id="GiaMoi" class="form-control currency" /></div>
+                    </div>
+                    <div class="row my-5">
+                        <div class="col-2 p5 pt-2">Kho hàng <span class="red">*</span></div>
+                        <div class="col-10 p5"><input required type="number" id="KhoHang" class="form-control" /></div>
+                    </div>
+                    <div class="row my-5">
+                        <div class="col-2 p5 pt-2">Chiều dài (cm) <span class="red">*</span></div>
+                        <div class="col-10 p5"><input required type="number" id="Length" class="form-control" /></div>
+                    </div>
+                    <div class="row my-5">
+                        <div class="col-2 p5 pt-2">Chiều rộng (cm) <span class="red">*</span></div>
+                        <div class="col-10 p5"><input required type="number" id="Width" class="form-control" /></div>
+                    </div>
+                    <div class="row my-5">
+                        <div class="col-2 p5 pt-2">Chiều cao (cm) <span class="red">*</span></div>
+                        <div class="col-10 p5"><input required type="number" id="Height" class="form-control" /></div>
+                    </div>
+                    <div class="row my-5">
+                        <div class="col-2 p5 pt-2">Cân nặng (gram) <span class="red">*</span></div>
+                        <div class="col-10 p5"><input required type="number" id="Weight" class="form-control" /></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-header card">
+            <div class="card-block">
+                <div class="bgWhite my-5 py-5 px-5">
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="h4 font-weight-bold">Quản lý hình ảnh</p>
+                        </div>
+                    </div>
+                    <div class="row my-5">
+                        <div class="col-2 p5 pt-2">Ảnh chính</div>
+                        <div class="col-2 p5">
+                            <div class="image-upload"><i class="ti-trash" hidden onclick="removeImg(event)"></i><img class="img-uploadA" src="/images/upload.png" width="100%"></div>
+                            <input type="file" required accept="image/x-png,image/gif,image/jpeg" id="fileuploadA" class="files" hidden onchange="loadImage2(event)" />
+                            <input type="hidden" name="hdfileuploadA" />
+
+                        </div>
+                    </div>
+                    <div class="row my-5">
+                        <div class="col-2 p5 pt-2">Hình Ảnh Sản Phẩm </div>
+                        <div class=" col-2 p5">
+                            <div class="image-upload"><i class="ti-trash" hidden onclick="removeImg(event)"></i><img class="img-upload1" src="images/upload.png" width="100%"></div>
+                            <input type="file" accept="image/x-png,image/gif,image/jpeg" id="fileupload1" class="files" hidden onchange="loadImage2(event)" />
+                            <input type="hidden" name="hdfileupload1" />
+
+                        </div>
+                        <div class=" col-2 p5">
+                            <div class="image-upload">
+                                <i class="ti-trash" hidden onclick="removeImg(event)"></i>
+                                <img class="img-upload2" src="images/upload.png" width="100%">
+                            </div>
+                            <input type="file" accept="image/x-png,image/gif,image/jpeg" id="fileupload2" class="files" hidden onchange="loadImage2(event)" />
+                            <input type="hidden" name="hdfileupload2" />
+
+                        </div>
+                        <div class=" col-2 p5">
+                            <div class=" image-upload">
+                                <i class="ti-trash" hidden onclick="removeImg(event)"></i>
+                                <img class="img-upload3" src="images/upload.png" width="100%">
+                            </div>
+                            <input type="file" accept="image/x-png,image/gif,image/jpeg" id="fileupload3" class="files" hidden onchange="loadImage2(event)" />
+                            <input type="hidden" name="hdfileupload3" />
+
+
+                        </div>
+                        <div class=" col-2 p5">
+                            <div class="image-upload">
+                                <i class="ti-trash" hidden onclick="removeImg(event)"></i>
+                                <img class="img-upload4" src="images/upload.png" width="100%">
+                            </div>
+                            <input type="file" accept="image/x-png,image/gif,image/jpeg" id="fileupload4" class="files" hidden onchange="loadImage2(event)" />
+                            <input type="hidden" name="hdfileupload4" />
+
+
+                        </div>
+                        <div class=" col-2 p5">
+                            <div class="image-upload">
+                                <i class="ti-trash" hidden onclick="removeImg(event)"></i>
+                                <img class="img-upload5" src="images/upload.png" width="100%">
+                            </div>
+                            <input type="file" accept="image/x-png,image/gif,image/jpeg" id="fileupload5" class="files" hidden onchange="loadImage2(event)" />
+                            <input type="hidden" name="hdfileupload5" />
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="page-header card">
+            <div class="card-block">
+                <div class="bgWhite mt-5 py-5 px-5">
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="h4 font-weight-bold">Thông tin khác</p>
+                        </div>
+                    </div>
+                    <div class="row my-5">
+                        <div class="col-2 p5">Tình Trạng Hàng</div>
+                        <div class="col-1 p5">
+                            <input type="radio" name="statusProduct" value="Mới"> Mới
+
+                        </div>
+                        <div class="col-2 p5">
+                            <input type="radio" name="statusProduct" value="Đã sử dụng"> Đã sử dụng
+
+                        </div>
+
+                    </div>
+                    <div class="row my-5">
+                        <div class="col-2 p5 pt-2">SKU Sản Phẩm</div>
+                        <div class="col-10 p5"><input name="SKUSanPham" class="form-control" /></div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="page-header card my-5">
+            <div class="card-block">
+
+            </div>
+        </div>
+        <div class="page-header card fixed-bottom mt-3" style="margin-bottom:0!important;">
+            <div class="">
+                <div class="row my-5">
+                    <div class="col-8"></div>
+                    <div class="col-2">
+                        <input class="btn btn-danger" value="Xóa" />
+                    </div>
+                    <div class="col-2">
+                        <input id="btnSubmit" type="submit" class="btn btn-success" value=" Thêm & Hiển Thị" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+

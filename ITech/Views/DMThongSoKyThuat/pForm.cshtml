@@ -1,0 +1,129 @@
+﻿@using ITech.Models;
+@{
+                /**/
+
+
+                var lstDMCha = ViewBag.lstDMCha as List<Category>;
+                Specification obj = ViewBag.obj;
+}
+
+<script>
+    $(document).ready(function () {
+
+        IDasName();
+        $('.chkAllDanhMuc').click(function () {
+            $('input[name="chkDanhMuc"]').prop("checked", $(this).is(':checked'));
+
+
+        })
+        $('#btnSubmit').click(function (e) {
+            e.preventDefault();
+            if (!validate())
+                return false;
+            var lstIDDM = '';
+            $('input[name="chkDanhMuc"]:checked').each(function () {
+                lstIDDM += $(this).val() + ';';
+            })
+
+            $('#idDanhMucArr').val(lstIDDM);
+
+            var dt = $("#frmThemDanhMuc").find("input,textarea,select,hidden").not("#__VIEWSTATE,#__EVENTVALIDATION, #__VIEWSTATEGENERATOR").serializeArray();
+            $.post("DMThongSoKyThuat/pAction", dt, function (data) {
+                if (data.Error) {
+                    createMessageBox("", data.Message, data.Error);
+                }
+                else {
+                    createMessageBoxUrl("", data.Message, data.Error, location.pathname);
+
+                }
+            })
+
+
+
+            //$.ajax({
+            //    url: '/DMThongSoKyThuat/pAction',
+            //    type: 'POST',
+            //    data: {dt: dt},
+            //    cache: false,
+            //    contentType: false,
+            //    processData: false,
+            //    async: false,
+            //    success: function (data) {
+            //        if (data.Error) {
+            //            createMessageBox("", data.Message, data.Error);
+            //        }
+            //        else {
+            //            createMessageBoxUrl("", data.Message, data.Error, "/danh-muc-thong-so-ky-thuat", location.pathname);
+
+            //        }
+            //    }
+            //});
+        })
+
+
+    });
+</script>
+<form id="frmThemDanhMuc">
+    <input type="hidden" id="do" name="do" value="@ViewBag.DoAction" />
+    <input type="hidden" id="id" name="itemID" value="@ViewBag.ArrID" />
+    <input type="hidden" id="idDanhMucArr" name="idDanhMucArr" />
+    <div class="page-header card">
+        <div class="card-block">
+            <div class="col-12 my-3">
+                <div class="row py-4">
+                    <div class="col-4">
+                        Tên loại thông số <span class="red">*</span>
+                        <input type="text" value="@( obj==null?string.Empty: obj.Name)" id="txtTS" placeholder="VD: RAM, CPU,..." class="required form-control" />
+                        <label class="message"></label>
+                    </div>
+
+                    <div class="col-4">
+                        <p>Danh mục</p> <br />
+                        <div class="container-fluid">
+                            <div class="bg-light"> <input type="checkbox" class="chkAllDanhMuc" /> Tất cả <br /></div>
+
+                            @foreach (Category x in ViewBag.lstDM)
+                            {
+                                if (obj != null)
+                                {
+                                    if (obj.CategoryID == x.ID)
+                                    {
+                                        <fieldset>
+
+                                            &nbsp; <input type="checkbox" disabled checked value="@x.ID" class="chkDanhMuc" name="chkDanhMuc" /> @x.Name <br />
+                                        </fieldset>
+                                    }
+
+
+                                }
+                                else
+                                {
+                                    <fieldset>
+
+                                        &nbsp; <input type="checkbox" value="@x.ID" class="chkDanhMuc" name="chkDanhMuc" /> @x.Name <br />
+                                    </fieldset>
+                                }
+
+                            }
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="row py-4">
+                <div class="col-4">
+                    <button id="btnSubmit" class="btn btn-success"><i class="ti-save"></i> @ViewBag.strSubmit</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </div>
+    <hr />
+
+
+</form>

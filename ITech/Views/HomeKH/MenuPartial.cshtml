@@ -1,0 +1,89 @@
+﻿@using ITech.Models;
+@{
+    ITechEntities db = new ITechEntities();
+}
+<!-- navigation -->
+<div class="navbar-inner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="agileits-navi_search">
+                <form action="#" method="post">
+                    <select id="agileinfo-nav_search" name="agileinfo-nav_search" class="border">
+                        <option value="">Tất cả</option>
+                        @foreach (Category x in ViewBag.danhmucs)
+                        {
+                            if (!string.IsNullOrEmpty(ViewBag.danhmuc))
+                            {
+                                if (int.Parse(ViewBag.danhmuc.ToString()) == x.ID)
+                                {
+                                    <option selected value="@x.ID">@x.Name</option>
+
+                                }
+                                else
+                                {
+                                    <option value="@x.ID">@x.Name</option>
+
+                                }
+                            }
+                            else
+                            {
+                                <option value="@x.ID">@x.Name</option>
+
+                            }
+
+                        }
+
+                    </select>
+                </form>
+            </div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav text-center mr-xl-5 ml-5">
+                    <li class="nav-item active mr-lg-2 mb-lg-0 mb-2">
+                        <a class="nav-link" href="/">
+                            Trang chủ
+                            <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                    @foreach (Category c1 in ViewBag.danhmucC1)
+                    {
+                        <li class="nav-item dropdown mr-lg-2 mb-lg-0 mb-2">
+                            <a style="height:40px;" class="nav-link dropdown-toggle" href="javascript:;" onclick="return SearchByDanhMuc('@c1.ID')" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img src="/images/commons/@c1.Image" style="height:100%;"> @c1.Name
+                            </a>
+                            <div class="dropdown-menu">
+                                <div class="agile_inner_drop_nav_info p-4">
+                                    @*<h5 class="mb-3">Mobiles, Computers</h5>*@
+                                    <div class="row">
+                                        @foreach (Category c2 in db.Categories.Where(x => x.ParentCode == c1.ID).ToList())
+                                        {
+                                            <div class="col-sm-6 multi-gd-img">
+                                                <ul class="multi-column-dropdown">
+
+                                                    <li> 
+
+                                                        <a style="height:30px; max-height:40px;" href="/tim-kiem?danhmuc=@c2.ID"><img src="/images/commons/@c2.Image" width="30px"> @c2.Name </a>
+
+
+                                                    </li>
+
+                                                </ul> 
+                                            </div>
+                                        }
+                                    </div>
+
+                                </div>
+                            </div>
+                        </li>
+                    }
+                    @*<li class="nav-item">
+                            <a class="nav-link" href="contact.html">Contact Us</a>
+                        </li>*@
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+<!-- //navigation -->

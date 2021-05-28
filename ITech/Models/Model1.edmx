@@ -1,0 +1,1446 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ITechModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AddressDelivers">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Cus_name" Type="nvarchar" MaxLength="254" />
+          <Property Name="Cus_phone" Type="nvarchar" MaxLength="254" />
+          <Property Name="ApartmentNumber" Type="nvarchar" MaxLength="254" />
+          <Property Name="Default" Type="int" />
+          <Property Name="Ward" Type="nvarchar" MaxLength="254" />
+          <Property Name="District" Type="nvarchar" MaxLength="254" />
+          <Property Name="City" Type="nvarchar" MaxLength="254" />
+          <Property Name="UserID" Type="nvarchar" MaxLength="50" />
+          <Property Name="WardCode" Type="nchar" MaxLength="100" />
+          <Property Name="DistrictCode" Type="nchar" MaxLength="100" />
+          <Property Name="CityCode" Type="nchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Administrators">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="254" />
+          <Property Name="Email" Type="nvarchar" MaxLength="254" />
+          <Property Name="Avatar" Type="nvarchar" MaxLength="254" />
+          <Property Name="Password" Type="nvarchar" MaxLength="254" />
+          <Property Name="isDeleted" Type="int" />
+        </EntityType>
+        <EntityType Name="Cate_Specs">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SpecID" Type="int" />
+          <Property Name="CategoryID" Type="int" />
+          <Property Name="status" Type="int" />
+        </EntityType>
+        <EntityType Name="Categories">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="254" />
+          <Property Name="Image" Type="nvarchar" MaxLength="254" />
+          <Property Name="ParentCode" Type="int" />
+          <Property Name="STT" Type="int" />
+          <Property Name="CategoryID" Type="int" />
+          <Property Name="isDeleted" Type="int" />
+        </EntityType>
+        <EntityType Name="Comments">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="254" />
+          <Property Name="Content" Type="nvarchar" MaxLength="254" />
+          <Property Name="Time" Type="datetime" />
+          <Property Name="Level" Type="int" />
+          <Property Name="ProductID" Type="int" />
+          <Property Name="CommentID" Type="int" />
+        </EntityType>
+        <EntityType Name="Evaluates">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Rate" Type="int" />
+          <Property Name="Content" Type="nvarchar" MaxLength="254" />
+          <Property Name="CustomerID" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProductID" Type="int" />
+        </EntityType>
+        <EntityType Name="Follows">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ShopID" Type="int" />
+          <Property Name="CustomerID" Type="nvarchar" MaxLength="50" />
+          <Property Name="status" Type="int" />
+        </EntityType>
+        <EntityType Name="Galleries">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Image" Type="nvarchar" MaxLength="254" />
+          <Property Name="ProductID" Type="int" />
+        </EntityType>
+        <EntityType Name="Keywords">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KeyWord" Type="nvarchar" MaxLength="255" />
+          <Property Name="count" Type="int" />
+        </EntityType>
+        <EntityType Name="MyCarts">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerID" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProductID" Type="int" />
+          <Property Name="Quantity" Type="int" />
+        </EntityType>
+        <EntityType Name="OrderDetails">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductID" Type="int" />
+          <Property Name="OrderID" Type="int" />
+          <Property Name="Quantity" Type="int" />
+        </EntityType>
+        <EntityType Name="Orders">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerID" Type="nvarchar" MaxLength="50" />
+          <Property Name="ShopID" Type="nvarchar" MaxLength="50" />
+          <Property Name="OrderDate" Type="datetime" />
+          <Property Name="DeliveryDate" Type="datetime" />
+          <Property Name="Address" Type="nvarchar" MaxLength="254" />
+          <Property Name="Receiver" Type="nvarchar" MaxLength="254" />
+          <Property Name="AddressType" Type="nvarchar" MaxLength="254" />
+          <Property Name="Status" Type="int" />
+          <Property Name="DeliveryNote" Type="nvarchar" MaxLength="254" />
+          <Property Name="OrderNote" Type="nvarchar" MaxLength="254" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="254" />
+          <Property Name="ScheduleCurrent" Type="nvarchar(max)" />
+          <Property Name="FeeShip" Type="float" />
+          <Property Name="OrderCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="CancelNote" Type="nvarchar" MaxLength="1000" />
+        </EntityType>
+        <EntityType Name="Product_Category">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductID" Type="int" />
+          <Property Name="CatID" Type="int" />
+          <Property Name="status" Type="int" />
+        </EntityType>
+        <EntityType Name="Product_Spec">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductID" Type="int" />
+          <Property Name="SpecID" Type="int" />
+          <Property Name="Value" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Products">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ShopID" Type="nvarchar" MaxLength="50" />
+          <Property Name="Title" Type="nvarchar" MaxLength="254" />
+          <Property Name="Price" Type="float" />
+          <Property Name="OldPrice" Type="float" />
+          <Property Name="Image" Type="nvarchar" MaxLength="254" />
+          <Property Name="Video" Type="nvarchar" MaxLength="254" />
+          <Property Name="SortContent" Type="nvarchar(max)" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="SKU" Type="nvarchar" MaxLength="254" />
+          <Property Name="Sold" Type="int" />
+          <Property Name="Status" Type="int" />
+          <Property Name="Inventory" Type="int" />
+          <Property Name="StatusProduct" Type="nvarchar" MaxLength="254" />
+          <Property Name="ApprovedDate" Type="datetime" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="ApproveStatus" Type="int" />
+          <Property Name="Score" Type="int" />
+          <Property Name="Width" Type="float" />
+          <Property Name="Height" Type="float" />
+          <Property Name="Weight" Type="float" />
+          <Property Name="Length" Type="float" />
+          <Property Name="ParrentID" Type="int" />
+        </EntityType>
+        <EntityType Name="Shops">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ShopName" Type="nvarchar" MaxLength="254" />
+          <Property Name="Avatar" Type="nvarchar" MaxLength="254" />
+          <Property Name="Description" Type="nvarchar" MaxLength="254" />
+          <Property Name="Email" Type="nvarchar" MaxLength="254" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="254" />
+          <Property Name="Status" Type="int" />
+          <Property Name="UserID" Type="nvarchar" MaxLength="50" />
+          <Property Name="CityCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="CityName" Type="nvarchar" MaxLength="30" />
+          <Property Name="DistrictCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="DistrictName" Type="nvarchar" MaxLength="30" />
+          <Property Name="WardCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="WardName" Type="nvarchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="Specifications">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="254" />
+          <Property Name="CategoryID" Type="int" />
+        </EntityType>
+        <EntityType Name="SpecValues">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SpecID" Type="int" />
+          <Property Name="CategoryID" Type="int" />
+          <Property Name="Value" Type="nvarchar" MaxLength="254" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Avatar" Type="nvarchar" MaxLength="254" />
+          <Property Name="DateOfBirth" Type="date" />
+          <Property Name="Email" Type="nvarchar" MaxLength="254" />
+          <Property Name="Password" Type="nvarchar" MaxLength="254" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="254" />
+          <Property Name="Status" Type="int" />
+          <Property Name="FullName" Type="nvarchar" MaxLength="254" />
+          <Property Name="Gender" Type="int" />
+          <Property Name="Address" Type="nvarchar" MaxLength="254" />
+          <Property Name="ActivationCode" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <Association Name="FK_AddressDelivers_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AddressDelivers" Type="Self.AddressDelivers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="AddressDelivers">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Cate_Specs_Categories">
+          <End Role="Categories" Type="Self.Categories" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Cate_Specs" Type="Self.Cate_Specs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categories">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Cate_Specs">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Cate_Specs_Specifications">
+          <End Role="Specifications" Type="Self.Specifications" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Cate_Specs" Type="Self.Cate_Specs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Specifications">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Cate_Specs">
+              <PropertyRef Name="SpecID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Galleries_Products">
+          <End Role="Products" Type="Self.Products" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Galleries" Type="Self.Galleries" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Galleries">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MyCarts_Products">
+          <End Role="Products" Type="Self.Products" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="MyCarts" Type="Self.MyCarts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="MyCarts">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderDetails_Orders">
+          <End Role="Orders" Type="Self.Orders" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="OrderDetails" Type="Self.OrderDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Orders">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="OrderDetails">
+              <PropertyRef Name="OrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderDetails_Products">
+          <End Role="Products" Type="Self.Products" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="OrderDetails" Type="Self.OrderDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="OrderDetails">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Category_Categories">
+          <End Role="Categories" Type="Self.Categories" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Product_Category" Type="Self.Product_Category" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categories">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Product_Category">
+              <PropertyRef Name="CatID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Category_Products">
+          <End Role="Products" Type="Self.Products" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Product_Category" Type="Self.Product_Category" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Product_Category">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Spec_Products">
+          <End Role="Products" Type="Self.Products" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Product_Spec" Type="Self.Product_Spec" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Product_Spec">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Spec_Specifications">
+          <End Role="Specifications" Type="Self.Specifications" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Product_Spec" Type="Self.Product_Spec" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Specifications">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Product_Spec">
+              <PropertyRef Name="SpecID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Products_Shops">
+          <End Role="Shops" Type="Self.Shops" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Products" Type="Self.Products" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shops">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Products">
+              <PropertyRef Name="ShopID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Shops_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Shops" Type="Self.Shops" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Shops">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="SearchSanPhamByDanhMuc" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CategoryID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SearchSanPhamTuongTu" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ProductID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_CountListOrderByShop" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ShopID" Type="nvarchar" Mode="In" />
+          <Parameter Name="status" Type="int" Mode="In" />
+          <Parameter Name="MaDH" Type="nvarchar" Mode="In" />
+          <Parameter Name="TuNgay" Type="date" Mode="In" />
+          <Parameter Name="DenNgay" Type="date" Mode="In" />
+          <Parameter Name="PageSize" Type="int" Mode="In" />
+          <Parameter Name="PageIndex" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_ListOrderByShop" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ShopID" Type="nvarchar" Mode="In" />
+          <Parameter Name="status" Type="int" Mode="In" />
+          <Parameter Name="MaDH" Type="nvarchar" Mode="In" />
+          <Parameter Name="TuNgay" Type="date" Mode="In" />
+          <Parameter Name="DenNgay" Type="date" Mode="In" />
+          <Parameter Name="PageSize" Type="int" Mode="In" />
+          <Parameter Name="PageIndex" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_ListOrderItemByOrder" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="OrderID" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="ITechModelStoreContainer">
+          <EntitySet Name="AddressDelivers" EntityType="Self.AddressDelivers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Administrators" EntityType="Self.Administrators" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Cate_Specs" EntityType="Self.Cate_Specs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Comments" EntityType="Self.Comments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Evaluates" EntityType="Self.Evaluates" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Follows" EntityType="Self.Follows" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Galleries" EntityType="Self.Galleries" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Keywords" EntityType="Self.Keywords" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MyCarts" EntityType="Self.MyCarts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderDetails" EntityType="Self.OrderDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Product_Category" EntityType="Self.Product_Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Product_Spec" EntityType="Self.Product_Spec" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Shops" EntityType="Self.Shops" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Specifications" EntityType="Self.Specifications" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SpecValues" EntityType="Self.SpecValues" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_AddressDelivers_Users" Association="Self.FK_AddressDelivers_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="AddressDelivers" EntitySet="AddressDelivers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Cate_Specs_Categories" Association="Self.FK_Cate_Specs_Categories">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="Cate_Specs" EntitySet="Cate_Specs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Cate_Specs_Specifications" Association="Self.FK_Cate_Specs_Specifications">
+            <End Role="Specifications" EntitySet="Specifications" />
+            <End Role="Cate_Specs" EntitySet="Cate_Specs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Galleries_Products" Association="Self.FK_Galleries_Products">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="Galleries" EntitySet="Galleries" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MyCarts_Products" Association="Self.FK_MyCarts_Products">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="MyCarts" EntitySet="MyCarts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderDetails_Orders" Association="Self.FK_OrderDetails_Orders">
+            <End Role="Orders" EntitySet="Orders" />
+            <End Role="OrderDetails" EntitySet="OrderDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderDetails_Products" Association="Self.FK_OrderDetails_Products">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="OrderDetails" EntitySet="OrderDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Category_Categories" Association="Self.FK_Product_Category_Categories">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="Product_Category" EntitySet="Product_Category" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Category_Products" Association="Self.FK_Product_Category_Products">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="Product_Category" EntitySet="Product_Category" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Spec_Products" Association="Self.FK_Product_Spec_Products">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="Product_Spec" EntitySet="Product_Spec" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Spec_Specifications" Association="Self.FK_Product_Spec_Specifications">
+            <End Role="Specifications" EntitySet="Specifications" />
+            <End Role="Product_Spec" EntitySet="Product_Spec" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Products_Shops" Association="Self.FK_Products_Shops">
+            <End Role="Shops" EntitySet="Shops" />
+            <End Role="Products" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Shops_Users" Association="Self.FK_Shops_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Shops" EntitySet="Shops" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ITechModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="ITechEntities" annotation:LazyLoadingEnabled="true">
+          <FunctionImport Name="SearchSanPhamTuongTu" ReturnType="Collection(ITechModel.SearchSanPhamTuongTu_Result)">
+          <Parameter Name="ProductID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SearchSanPhamByDanhMuc" ReturnType="Collection(ITechModel.SearchSanPhamByDanhMuc_Result)">
+          <Parameter Name="CategoryID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="AddressDelivers" EntityType="ITechModel.AddressDeliver" />
+          <EntitySet Name="Administrators" EntityType="ITechModel.Administrator" />
+          <EntitySet Name="Cate_Specs" EntityType="ITechModel.Cate_Specs" />
+          <EntitySet Name="Categories" EntityType="ITechModel.Category" />
+          <EntitySet Name="Comments" EntityType="ITechModel.Comment" />
+          <EntitySet Name="Evaluates" EntityType="ITechModel.Evaluate" />
+          <EntitySet Name="Follows" EntityType="ITechModel.Follow" />
+          <EntitySet Name="Galleries" EntityType="ITechModel.Gallery" />
+          <EntitySet Name="MyCarts" EntityType="ITechModel.MyCart" />
+          <EntitySet Name="OrderDetails" EntityType="ITechModel.OrderDetail" />
+          <EntitySet Name="Orders" EntityType="ITechModel.Order" />
+          <EntitySet Name="Product_Category" EntityType="ITechModel.Product_Category" />
+          <EntitySet Name="Products" EntityType="ITechModel.Product" />
+          <EntitySet Name="Shops" EntityType="ITechModel.Shop" />
+          <EntitySet Name="Specifications" EntityType="ITechModel.Specification" />
+          <EntitySet Name="SpecValues" EntityType="ITechModel.SpecValue" />
+          <EntitySet Name="Users" EntityType="ITechModel.User" />
+          <AssociationSet Name="FK_AddressDelivers_Users" Association="ITechModel.FK_AddressDelivers_Users">
+            <End Role="User" EntitySet="Users" />
+            <End Role="AddressDeliver" EntitySet="AddressDelivers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Cate_Specs_Categories" Association="ITechModel.FK_Cate_Specs_Categories">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="Cate_Specs" EntitySet="Cate_Specs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Cate_Specs_Specifications" Association="ITechModel.FK_Cate_Specs_Specifications">
+            <End Role="Specification" EntitySet="Specifications" />
+            <End Role="Cate_Specs" EntitySet="Cate_Specs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Category_Categories" Association="ITechModel.FK_Product_Category_Categories">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="Product_Category" EntitySet="Product_Category" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Galleries_Products" Association="ITechModel.FK_Galleries_Products">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Gallery" EntitySet="Galleries" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MyCarts_Products" Association="ITechModel.FK_MyCarts_Products">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="MyCart" EntitySet="MyCarts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderDetails_Orders" Association="ITechModel.FK_OrderDetails_Orders">
+            <End Role="Order" EntitySet="Orders" />
+            <End Role="OrderDetail" EntitySet="OrderDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderDetails_Products" Association="ITechModel.FK_OrderDetails_Products">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="OrderDetail" EntitySet="OrderDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Category_Products" Association="ITechModel.FK_Product_Category_Products">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Product_Category" EntitySet="Product_Category" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Products_Shops" Association="ITechModel.FK_Products_Shops">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Shops_Users" Association="ITechModel.FK_Shops_Users">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Shop" EntitySet="Shops" />
+          </AssociationSet>
+          <FunctionImport Name="sp_ListOrderByShop" ReturnType="Collection(ITechModel.sp_ListOrderByShop_Result)">
+            <Parameter Name="ShopID" Mode="In" Type="String" />
+            <Parameter Name="status" Mode="In" Type="Int32" />
+            <Parameter Name="MaDH" Mode="In" Type="String" />
+            <Parameter Name="TuNgay" Mode="In" Type="DateTime" />
+            <Parameter Name="DenNgay" Mode="In" Type="DateTime" />
+            <Parameter Name="PageSize" Mode="In" Type="Int32" />
+            <Parameter Name="PageIndex" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_ListOrderItemByOrder" ReturnType="Collection(ITechModel.sp_ListOrderItemByOrder_Result)">
+          <Parameter Name="OrderID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_CountListOrderByShop" ReturnType="Collection(Int32)">
+            <Parameter Name="ShopID" Mode="In" Type="String" />
+            <Parameter Name="status" Mode="In" Type="Int32" />
+            <Parameter Name="MaDH" Mode="In" Type="String" />
+            <Parameter Name="TuNgay" Mode="In" Type="DateTime" />
+            <Parameter Name="DenNgay" Mode="In" Type="DateTime" />
+            <Parameter Name="PageSize" Mode="In" Type="Int32" />
+            <Parameter Name="PageIndex" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="Keywords" EntityType="ITechModel.Keyword" />
+          <EntitySet Name="Product_Spec" EntityType="ITechModel.Product_Spec" />
+          <AssociationSet Name="FK_Product_Spec_Products" Association="ITechModel.FK_Product_Spec_Products">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Product_Spec" EntitySet="Product_Spec" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Product_Spec_Specifications" Association="ITechModel.FK_Product_Spec_Specifications">
+            <End Role="Specification" EntitySet="Specifications" />
+            <End Role="Product_Spec" EntitySet="Product_Spec" />
+          </AssociationSet>
+          </EntityContainer>
+        <ComplexType Name="SearchSanPhamTuongTu_Result">
+          <Property Type="String" Name="Image" Nullable="true" MaxLength="254" />
+          <Property Type="String" Name="Title" Nullable="true" MaxLength="254" />
+          <Property Type="Double" Name="OldPrice" Nullable="true" />
+          <Property Type="Double" Name="Price" Nullable="true" />
+          <Property Type="Int32" Name="Sold" Nullable="true" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="Int32" Name="CatID" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="SearchSanPhamByDanhMuc_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Image" Nullable="true" MaxLength="254" />
+          <Property Type="String" Name="Title" Nullable="true" MaxLength="254" />
+          <Property Type="Double" Name="OldPrice" Nullable="true" />
+          <Property Type="Double" Name="Price" Nullable="true" />
+          <Property Type="Int32" Name="Sold" Nullable="true" />
+        </ComplexType>
+        <EntityType Name="AddressDeliver">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Cus_name" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_phone" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="ApartmentNumber" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Default" Type="Int32" />
+          <Property Name="Ward" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="District" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="UserID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="WardCode" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="DistrictCode" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="CityCode" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="User" Relationship="ITechModel.FK_AddressDelivers_Users" FromRole="AddressDeliver" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Administrator">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Avatar" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="isDeleted" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Cate_Specs">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SpecID" Type="Int32" />
+          <Property Name="CategoryID" Type="Int32" />
+          <Property Name="status" Type="Int32" />
+          <NavigationProperty Name="Category" Relationship="ITechModel.FK_Cate_Specs_Categories" FromRole="Cate_Specs" ToRole="Category" />
+          <NavigationProperty Name="Specification" Relationship="ITechModel.FK_Cate_Specs_Specifications" FromRole="Cate_Specs" ToRole="Specification" />
+        </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Image" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="ParentCode" Type="Int32" />
+          <Property Name="STT" Type="Int32" />
+          <Property Name="CategoryID" Type="Int32" />
+          <Property Name="isDeleted" Type="Int32" />
+          <NavigationProperty Name="Cate_Specs" Relationship="ITechModel.FK_Cate_Specs_Categories" FromRole="Category" ToRole="Cate_Specs" />
+          <NavigationProperty Name="Product_Category" Relationship="ITechModel.FK_Product_Category_Categories" FromRole="Category" ToRole="Product_Category" />
+        </EntityType>
+        <EntityType Name="Comment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Time" Type="DateTime" Precision="3" />
+          <Property Name="Level" Type="Int32" />
+          <Property Name="ProductID" Type="Int32" />
+          <Property Name="CommentID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Evaluate">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Rate" Type="Int32" />
+          <Property Name="Content" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProductID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Follow">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ShopID" Type="Int32" />
+          <Property Name="CustomerID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Gallery">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Image" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="ProductID" Type="Int32" />
+          <NavigationProperty Name="Product" Relationship="ITechModel.FK_Galleries_Products" FromRole="Gallery" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="MyCart">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProductID" Type="Int32" />
+          <Property Name="Quantity" Type="Int32" />
+          <NavigationProperty Name="Product" Relationship="ITechModel.FK_MyCarts_Products" FromRole="MyCart" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="OrderDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductID" Type="Int32" />
+          <Property Name="OrderID" Type="Int32" />
+          <Property Name="Quantity" Type="Int32" />
+          <NavigationProperty Name="Order" Relationship="ITechModel.FK_OrderDetails_Orders" FromRole="OrderDetail" ToRole="Order" />
+          <NavigationProperty Name="Product" Relationship="ITechModel.FK_OrderDetails_Products" FromRole="OrderDetail" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="Order">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ShopID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OrderDate" Type="DateTime" Precision="3" />
+          <Property Name="DeliveryDate" Type="DateTime" Precision="3" />
+          <Property Name="Address" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Receiver" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="AddressType" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="DeliveryNote" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="OrderNote" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="ScheduleCurrent" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FeeShip" Type="Double" />
+          <Property Name="OrderCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CancelNote" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="OrderDetails" Relationship="ITechModel.FK_OrderDetails_Orders" FromRole="Order" ToRole="OrderDetail" />
+        </EntityType>
+        <EntityType Name="Product_Category">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductID" Type="Int32" />
+          <Property Name="CatID" Type="Int32" />
+          <Property Name="status" Type="Int32" />
+          <NavigationProperty Name="Category" Relationship="ITechModel.FK_Product_Category_Categories" FromRole="Product_Category" ToRole="Category" />
+          <NavigationProperty Name="Product" Relationship="ITechModel.FK_Product_Category_Products" FromRole="Product_Category" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ShopID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Double" />
+          <Property Name="OldPrice" Type="Double" />
+          <Property Name="Image" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Video" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="SortContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SKU" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Sold" Type="Int32" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="Inventory" Type="Int32" />
+          <Property Name="StatusProduct" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="ApprovedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="ApproveStatus" Type="Int32" />
+          <Property Name="Score" Type="Int32" />
+          <Property Name="Width" Type="Double" />
+          <Property Name="Height" Type="Double" />
+          <Property Name="Weight" Type="Double" />
+          <Property Name="Length" Type="Double" />
+          <NavigationProperty Name="Galleries" Relationship="ITechModel.FK_Galleries_Products" FromRole="Product" ToRole="Gallery" />
+          <NavigationProperty Name="MyCarts" Relationship="ITechModel.FK_MyCarts_Products" FromRole="Product" ToRole="MyCart" />
+          <NavigationProperty Name="OrderDetails" Relationship="ITechModel.FK_OrderDetails_Products" FromRole="Product" ToRole="OrderDetail" />
+          <NavigationProperty Name="Product_Category" Relationship="ITechModel.FK_Product_Category_Products" FromRole="Product" ToRole="Product_Category" />
+          <NavigationProperty Name="Shop" Relationship="ITechModel.FK_Products_Shops" FromRole="Product" ToRole="Shop" />
+          <Property Name="ParrentID" Type="Int32" />
+          <NavigationProperty Name="Product_Spec" Relationship="ITechModel.FK_Product_Spec_Products" FromRole="Product" ToRole="Product_Spec" />
+        </EntityType>
+        <EntityType Name="Shop">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ShopName" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Avatar" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="UserID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CityCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CityName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="DistrictCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="DistrictName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="WardCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="WardName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Products" Relationship="ITechModel.FK_Products_Shops" FromRole="Shop" ToRole="Product" />
+          <NavigationProperty Name="User" Relationship="ITechModel.FK_Shops_Users" FromRole="Shop" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Specification">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryID" Type="Int32" />
+          <NavigationProperty Name="Cate_Specs" Relationship="ITechModel.FK_Cate_Specs_Specifications" FromRole="Specification" ToRole="Cate_Specs" />
+          <NavigationProperty Name="Product_Spec" Relationship="ITechModel.FK_Product_Spec_Specifications" FromRole="Specification" ToRole="Product_Spec" />
+        </EntityType>
+        <EntityType Name="SpecValue">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SpecID" Type="Int32" />
+          <Property Name="CategoryID" Type="Int32" />
+          <Property Name="Value" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Avatar" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="DateOfBirth" Type="DateTime" Precision="0" />
+          <Property Name="Email" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="FullName" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="Gender" Type="Int32" />
+          <Property Name="Address" Type="String" MaxLength="254" FixedLength="false" Unicode="true" />
+          <Property Name="ActivationCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AddressDelivers" Relationship="ITechModel.FK_AddressDelivers_Users" FromRole="User" ToRole="AddressDeliver" />
+          <NavigationProperty Name="Shops" Relationship="ITechModel.FK_Shops_Users" FromRole="User" ToRole="Shop" />
+        </EntityType>
+        <Association Name="FK_AddressDelivers_Users">
+          <End Type="ITechModel.User" Role="User" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ITechModel.AddressDeliver" Role="AddressDeliver" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="AddressDeliver">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Cate_Specs_Categories">
+          <End Type="ITechModel.Category" Role="Category" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ITechModel.Cate_Specs" Role="Cate_Specs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Cate_Specs">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Cate_Specs_Specifications">
+          <End Type="ITechModel.Specification" Role="Specification" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ITechModel.Cate_Specs" Role="Cate_Specs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Specification">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Cate_Specs">
+              <PropertyRef Name="SpecID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Category_Categories">
+          <End Type="ITechModel.Category" Role="Category" Multiplicity="0..1" />
+          <End Type="ITechModel.Product_Category" Role="Product_Category" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Product_Category">
+              <PropertyRef Name="CatID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Galleries_Products">
+          <End Type="ITechModel.Product" Role="Product" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ITechModel.Gallery" Role="Gallery" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Gallery">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MyCarts_Products">
+          <End Type="ITechModel.Product" Role="Product" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ITechModel.MyCart" Role="MyCart" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="MyCart">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderDetails_Orders">
+          <End Type="ITechModel.Order" Role="Order" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ITechModel.OrderDetail" Role="OrderDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="OrderDetail">
+              <PropertyRef Name="OrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderDetails_Products">
+          <End Type="ITechModel.Product" Role="Product" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ITechModel.OrderDetail" Role="OrderDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="OrderDetail">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Category_Products">
+          <End Type="ITechModel.Product" Role="Product" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ITechModel.Product_Category" Role="Product_Category" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Product_Category">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Products_Shops">
+          <End Type="ITechModel.Shop" Role="Shop" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ITechModel.Product" Role="Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="ShopID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Shops_Users">
+          <End Type="ITechModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="ITechModel.Shop" Role="Shop" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Shop">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <ComplexType Name="sp_ListOrderByShop_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="CustomerID" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ShopID" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="OrderDate" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="DeliveryDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="Address" Nullable="true" MaxLength="254" />
+          <Property Type="String" Name="Receiver" Nullable="true" MaxLength="254" />
+          <Property Type="String" Name="AddressType" Nullable="true" MaxLength="254" />
+          <Property Type="Int32" Name="Status" Nullable="true" />
+          <Property Type="String" Name="DeliveryNote" Nullable="true" MaxLength="254" />
+          <Property Type="String" Name="OrderNote" Nullable="true" MaxLength="254" />
+          <Property Type="String" Name="Phone" Nullable="true" MaxLength="254" />
+          <Property Type="String" Name="ScheduleCurrent" Nullable="true" />
+          <Property Type="Double" Name="FeeShip" Nullable="true" />
+          <Property Type="String" Name="OrderCode" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="CancelNote" Nullable="true" MaxLength="1000" />
+          <Property Type="Int64" Name="r" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_ListOrderItemByOrder_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="Int32" Name="ProductID" Nullable="true" />
+          <Property Type="Int32" Name="OrderID" Nullable="true" />
+          <Property Type="Int32" Name="Quantity" Nullable="true" />
+        </ComplexType>
+        <EntityType Name="Keyword">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KeyWord1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="count" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Product_Spec">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductID" Type="Int32" />
+          <Property Name="SpecID" Type="Int32" />
+          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Product" Relationship="ITechModel.FK_Product_Spec_Products" FromRole="Product_Spec" ToRole="Product" />
+          <NavigationProperty Name="Specification" Relationship="ITechModel.FK_Product_Spec_Specifications" FromRole="Product_Spec" ToRole="Specification" />
+        </EntityType>
+        <Association Name="FK_Product_Spec_Products">
+          <End Type="ITechModel.Product" Role="Product" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ITechModel.Product_Spec" Role="Product_Spec" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Product_Spec">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Product_Spec_Specifications">
+          <End Type="ITechModel.Specification" Role="Specification" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ITechModel.Product_Spec" Role="Product_Spec" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Specification">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Product_Spec">
+              <PropertyRef Name="SpecID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ITechModelStoreContainer" CdmEntityContainer="ITechEntities">
+          <FunctionImportMapping FunctionImportName="SearchSanPhamTuongTu" FunctionName="ITechModel.Store.SearchSanPhamTuongTu">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ITechModel.SearchSanPhamTuongTu_Result">
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="OldPrice" ColumnName="OldPrice" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Sold" ColumnName="Sold" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CatID" ColumnName="CatID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SearchSanPhamByDanhMuc" FunctionName="ITechModel.Store.SearchSanPhamByDanhMuc">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ITechModel.SearchSanPhamByDanhMuc_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="OldPrice" ColumnName="OldPrice" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Sold" ColumnName="Sold" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="AddressDelivers">
+            <EntityTypeMapping TypeName="ITechModel.AddressDeliver">
+              <MappingFragment StoreEntitySet="AddressDelivers">
+                <ScalarProperty Name="CityCode" ColumnName="CityCode" />
+                <ScalarProperty Name="DistrictCode" ColumnName="DistrictCode" />
+                <ScalarProperty Name="WardCode" ColumnName="WardCode" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="District" ColumnName="District" />
+                <ScalarProperty Name="Ward" ColumnName="Ward" />
+                <ScalarProperty Name="Default" ColumnName="Default" />
+                <ScalarProperty Name="ApartmentNumber" ColumnName="ApartmentNumber" />
+                <ScalarProperty Name="Cus_phone" ColumnName="Cus_phone" />
+                <ScalarProperty Name="Cus_name" ColumnName="Cus_name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Administrators">
+            <EntityTypeMapping TypeName="ITechModel.Administrator">
+              <MappingFragment StoreEntitySet="Administrators">
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Avatar" ColumnName="Avatar" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Cate_Specs">
+            <EntityTypeMapping TypeName="ITechModel.Cate_Specs">
+              <MappingFragment StoreEntitySet="Cate_Specs">
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="SpecID" ColumnName="SpecID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="ITechModel.Category">
+              <MappingFragment StoreEntitySet="Categories">
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="STT" ColumnName="STT" />
+                <ScalarProperty Name="ParentCode" ColumnName="ParentCode" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Comments">
+            <EntityTypeMapping TypeName="ITechModel.Comment">
+              <MappingFragment StoreEntitySet="Comments">
+                <ScalarProperty Name="CommentID" ColumnName="CommentID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="Level" ColumnName="Level" />
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Evaluates">
+            <EntityTypeMapping TypeName="ITechModel.Evaluate">
+              <MappingFragment StoreEntitySet="Evaluates">
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Rate" ColumnName="Rate" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Follows">
+            <EntityTypeMapping TypeName="ITechModel.Follow">
+              <MappingFragment StoreEntitySet="Follows">
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="ShopID" ColumnName="ShopID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Galleries">
+            <EntityTypeMapping TypeName="ITechModel.Gallery">
+              <MappingFragment StoreEntitySet="Galleries">
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MyCarts">
+            <EntityTypeMapping TypeName="ITechModel.MyCart">
+              <MappingFragment StoreEntitySet="MyCarts">
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrderDetails">
+            <EntityTypeMapping TypeName="ITechModel.OrderDetail">
+              <MappingFragment StoreEntitySet="OrderDetails">
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Orders">
+            <EntityTypeMapping TypeName="ITechModel.Order">
+              <MappingFragment StoreEntitySet="Orders">
+                <ScalarProperty Name="CancelNote" ColumnName="CancelNote" />
+                <ScalarProperty Name="OrderCode" ColumnName="OrderCode" />
+                <ScalarProperty Name="FeeShip" ColumnName="FeeShip" />
+                <ScalarProperty Name="ScheduleCurrent" ColumnName="ScheduleCurrent" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="OrderNote" ColumnName="OrderNote" />
+                <ScalarProperty Name="DeliveryNote" ColumnName="DeliveryNote" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="AddressType" ColumnName="AddressType" />
+                <ScalarProperty Name="Receiver" ColumnName="Receiver" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="DeliveryDate" ColumnName="DeliveryDate" />
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+                <ScalarProperty Name="ShopID" ColumnName="ShopID" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Product_Category">
+            <EntityTypeMapping TypeName="ITechModel.Product_Category">
+              <MappingFragment StoreEntitySet="Product_Category">
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="CatID" ColumnName="CatID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Products">
+            <EntityTypeMapping TypeName="ITechModel.Product">
+              <MappingFragment StoreEntitySet="Products">
+                <ScalarProperty Name="ParrentID" ColumnName="ParrentID" />
+                <ScalarProperty Name="Length" ColumnName="Length" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="Height" ColumnName="Height" />
+                <ScalarProperty Name="Width" ColumnName="Width" />
+                <ScalarProperty Name="Score" ColumnName="Score" />
+                <ScalarProperty Name="ApproveStatus" ColumnName="ApproveStatus" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="ApprovedDate" ColumnName="ApprovedDate" />
+                <ScalarProperty Name="StatusProduct" ColumnName="StatusProduct" />
+                <ScalarProperty Name="Inventory" ColumnName="Inventory" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Sold" ColumnName="Sold" />
+                <ScalarProperty Name="SKU" ColumnName="SKU" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="SortContent" ColumnName="SortContent" />
+                <ScalarProperty Name="Video" ColumnName="Video" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="OldPrice" ColumnName="OldPrice" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ShopID" ColumnName="ShopID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Shops">
+            <EntityTypeMapping TypeName="ITechModel.Shop">
+              <MappingFragment StoreEntitySet="Shops">
+                <ScalarProperty Name="WardName" ColumnName="WardName" />
+                <ScalarProperty Name="WardCode" ColumnName="WardCode" />
+                <ScalarProperty Name="DistrictName" ColumnName="DistrictName" />
+                <ScalarProperty Name="DistrictCode" ColumnName="DistrictCode" />
+                <ScalarProperty Name="CityName" ColumnName="CityName" />
+                <ScalarProperty Name="CityCode" ColumnName="CityCode" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Avatar" ColumnName="Avatar" />
+                <ScalarProperty Name="ShopName" ColumnName="ShopName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Specifications">
+            <EntityTypeMapping TypeName="ITechModel.Specification">
+              <MappingFragment StoreEntitySet="Specifications">
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SpecValues">
+            <EntityTypeMapping TypeName="ITechModel.SpecValue">
+              <MappingFragment StoreEntitySet="SpecValues">
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="SpecID" ColumnName="SpecID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="ITechModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="ActivationCode" ColumnName="ActivationCode" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+                <ScalarProperty Name="Avatar" ColumnName="Avatar" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_ListOrderByShop" FunctionName="ITechModel.Store.sp_ListOrderByShop">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ITechModel.sp_ListOrderByShop_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="ShopID" ColumnName="ShopID" />
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+                <ScalarProperty Name="DeliveryDate" ColumnName="DeliveryDate" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Receiver" ColumnName="Receiver" />
+                <ScalarProperty Name="AddressType" ColumnName="AddressType" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="DeliveryNote" ColumnName="DeliveryNote" />
+                <ScalarProperty Name="OrderNote" ColumnName="OrderNote" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="ScheduleCurrent" ColumnName="ScheduleCurrent" />
+                <ScalarProperty Name="FeeShip" ColumnName="FeeShip" />
+                <ScalarProperty Name="OrderCode" ColumnName="OrderCode" />
+                <ScalarProperty Name="CancelNote" ColumnName="CancelNote" />
+                <ScalarProperty Name="r" ColumnName="r" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_ListOrderItemByOrder" FunctionName="ITechModel.Store.sp_ListOrderItemByOrder">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ITechModel.sp_ListOrderItemByOrder_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_CountListOrderByShop" FunctionName="ITechModel.Store.sp_CountListOrderByShop" />
+          <EntitySetMapping Name="Keywords">
+            <EntityTypeMapping TypeName="ITechModel.Keyword">
+              <MappingFragment StoreEntitySet="Keywords">
+                <ScalarProperty Name="count" ColumnName="count" />
+                <ScalarProperty Name="KeyWord1" ColumnName="KeyWord" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Product_Spec">
+            <EntityTypeMapping TypeName="ITechModel.Product_Spec">
+              <MappingFragment StoreEntitySet="Product_Spec">
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="SpecID" ColumnName="SpecID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

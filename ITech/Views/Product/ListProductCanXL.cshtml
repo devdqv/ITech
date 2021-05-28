@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewBag.Title = "Danh sách cửa hàng có sản phẩm cần xử lý";
+    Layout = "~/Views/Shared/MasterBanHang.cshtml";
+}
+
+@using ITech.Models;
+@{
+    ITechEntities db = new ITechEntities();
+}
+
+@{
+    var user = Session["user"] as User;
+}
+
+
+
+@section script{
+    <script>
+        $(document).ready(function () {
+
+
+        })
+
+    </script>
+}
+
+@{
+    int type = ViewBag.type;
+}
+<div class="page-header card">
+    <div class="card-block">
+        <div class="col-lg-12 col-12 col-xl-12">
+            <div class="sub-title">DANH SÁCH CỬA HÀNG</div>
+
+            <div class="gridview-container">
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Ảnh</th>
+                            <th>Cửa hàng</th>
+                            <th>Địa chỉ</th>
+                            <th class="text-center">Chi tiết sản phẩm</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var x in ViewBag.lstShop as List<Shop>)
+                        {
+                            if (type == HangSo.DaKhoa)
+                            {
+                                var count = db.Products.Where(t => t.ShopID == x.ID && t.ApproveStatus == type).Count();
+                                if (count > 0)
+                                {
+
+
+                                    <tr>
+                                        <th><img src="/images/commons/@x.Avatar" width="50px" /></th>
+                                        <th><a href="/danh-sach-don-hang-cua-hang?shopID=@x.ID">@x.ShopName</a></th>
+                                        <th>@x.WardName , @x.DistrictName , @x.CityName</th>
+
+                                        <th class="text-center">
+                                            <a href="danh-sach-san-pham?ShopID=@x.ID&type=@type">
+                                                Xem sản phẩm (
+                                                <span class="red">
+                                                    @(count)
+                                                </span>)
+
+                                            </a>
+                                        </th>
+                                    </tr>
+                                }
+                            }
+                            else if (type == HangSo.HetHang)
+                            {
+                                var count = db.Products.Where(t => t.ShopID == x.ID && t.Inventory == 0).Count();
+                                if (count > 0)
+                                {
+                                    <tr>
+                                        <th><img src="/images/commons/@x.Avatar" width="50px" /></th>
+                                        <th><a href="/danh-sach-don-hang-cua-hang?shopID=@x.ID">@x.ShopName</a></th>
+                                        <th>@x.WardName , @x.DistrictName , @x.CityName</th>
+
+                                        <th class="text-center">
+                                            <a href="danh-sach-san-pham?ShopID=@x.ID&type=@type">
+                                                Xem sản phẩm (
+
+                                                <span class="red">
+                                                    @(count)
+                                                </span>)
+
+                                            </a>
+                                        </th>
+                                    </tr>
+                                }
+                            }
+
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+

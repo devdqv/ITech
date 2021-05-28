@@ -1,0 +1,262 @@
+﻿@model ITech.Models.Shop
+
+@{
+    ViewBag.Title = "Sửa gian hàng";
+    Layout = "~/Views/Shared/MasterBanHang.cshtml";
+}
+@section script{
+
+    <script>
+        $(document).ready(function () {
+
+            var urlCity = "https://online-gateway.ghn.vn/shiip/public-api/master-data/province";
+        var urlDistrict = "https://online-gateway.ghn.vn/shiip/public-api/master-data/district";
+        var urlWard = "https://online-gateway.ghn.vn/shiip/public-api/master-data/ward";
+        localStorage.setItem('token', "4427424b-9ccc-11eb-9035-ae038bcc764b");
+        $("#hdCityCode").val('@Model.CityCode.Trim()');
+        $("#hdDistrictCode").val('@Model.DistrictCode.Trim()');
+        $("#hdWardCode").val('@Model.WardCode.Trim()');
+
+        $.ajax({
+            type: "GET",
+            url: urlCity,
+            dataType: "json",
+            headers: { "token": localStorage.getItem('token') },
+            success: function (d) {
+                var html = "<option value=''>Tỉnh/Thành phố</option>";
+
+                d.data.sort((a, b) => (a.ProvinceName > b.ProvinceName) ? 1 : -1);
+                Object.keys(d.data).forEach(function (elm) {
+                    elm = d.data[elm];
+                    if (elm.ProvinceID =='@Model.CityCode.Trim()')
+                        html += "<option selected='selected' data-name='" + elm.ProvinceName + "' value='" + elm.ProvinceID + "'>" + elm.ProvinceName + "</option>";
+                    else
+                        html += "<option data-name='" + elm.ProvinceName + "' value='" + elm.ProvinceID + "'>" + elm.ProvinceName + "</option>";
+
+                });
+                $('#ddlCity').html(html);
+
+            }
+        });
+        $.ajax({
+            type: "get",
+            url: urlDistrict,
+            data: { province_id: $("#hdCityCode").val() },
+            dataType: "json",
+            headers: { "token": localStorage.getItem('token') },
+            success: function (d) {
+                console.log(d);
+                var html = "<option value=''>Quận/Huyện</option>";
+                d.data.sort((a, b) => (a.DistrictName > b.DistrictName) ? 1 : -1);
+                Object.keys(d.data).forEach(function (elm) {
+                    elm = d.data[elm];
+                    if (elm.DistrictID =='@Model.DistrictCode.Trim()')
+                        html += "<option  selected='selected' data-name='" + elm.DistrictName + "' value='" + elm.DistrictID + "'>" + elm.DistrictName + "</option>";
+                    else
+                        html += "<option data-name='" + elm.DistrictName + "' value='" + elm.DistrictID + "'>" + elm.DistrictName + "</option>";
+
+                });
+                $('#ddlDistrict').html(html);
+
+            }
+        });
+
+        $.ajax({
+            type: "get",
+            url: urlWard,
+            data: { district_id: $("#hdDistrictCode").val() },
+            dataType: "json",
+            headers: { "token": localStorage.getItem('token') },
+            success: function (d) {
+                console.log(d);
+                var html = "<option value=''>Phường/Xã</option>";
+                d.data.sort((a, b) => (a.WardName > b.WardName) ? 1 : -1);
+                Object.keys(d.data).forEach(function (elm) {
+                    elm = d.data[elm];
+                    if (elm.WardCode =='@Model.WardCode.Trim()')
+                        html += "<option selected='selected'  data-name='" + elm.WardName + "' value='" + elm.WardCode + "'>" + elm.WardName + "</option>";
+                    else
+                        html += "<option data-name='" + elm.WardName + "' value='" + elm.WardCode + "'>" + elm.WardName + "</option>";
+
+                });
+                $('#ddlWard').html(html);
+
+            }
+        });
+
+        $('#ddlCity').on('change', function () {
+
+            $.ajax({
+                type: "get",
+                url: urlDistrict,
+                data: { province_id : $('#ddlCity').val() },
+                dataType: "json",
+                headers: { "token": localStorage.getItem('token') },
+                success: function (d) {
+                    console.log(d);
+                    var html = "<option value=''>Quận/Huyện</option>";
+                    d.data.sort((a, b) => (a.DistrictName > b.DistrictName) ? 1 : -1);
+                    Object.keys(d.data).forEach(function (elm) {
+                        elm = d.data[elm];
+                        html += "<option data-name='" + elm.DistrictName +"' value='" + elm.DistrictID + "'>" + elm.DistrictName + "</option>";
+                    });
+                    $('#ddlDistrict').html(html);
+                    $('#ddlWard').html("<option value=''>Phường/Xã</option>");
+                }
+            });
+
+
+        })
+
+        $('#ddlDistrict').on('change', function () {
+            $.ajax({
+                type: "get",
+                url: urlWard,
+                data: { district_id : $('#ddlDistrict').val() },
+                dataType: "json",
+                headers: { "token": localStorage.getItem('token') },
+                success: function (d) {
+                    console.log(d);
+                    var html = "<option value=''>Phường/Xã</option>";
+                    d.data.sort((a, b) => (a.WardName > b.WardName) ? 1 : -1);
+                    Object.keys(d.data).forEach(function (elm) {
+                        elm = d.data[elm];
+                        html += "<option data-name='" + elm.WardName + "' value='" + elm.WardCode + "'>" + elm.WardName + "</option>";
+                    });
+                    $('#ddlWard').html(html);
+
+                }
+            });
+
+        })
+
+
+            $('.img-upload').click(function (e) {
+                e.preventDefault();
+                $("#fileupload").click();
+            });
+
+            $('#btnSubmit').click(function (e) {
+                e.preventDefault();
+
+                if ($('#FormMaster').valid()) {
+
+                    var data = new FormData();
+                    var file = $('#fileupload').get(0).files;
+                    data.append('fileupload', file[0]);
+
+                    $('#hdCity').val($('#ddlCity').find('option:selected').data('name'));
+                    $('#hdDistrict').val($('#ddlDistrict').find('option:selected').data('name'));
+                    $('#hdWard').val($('#ddlWard').find('option:selected').data('name'));
+
+                    AppendArrFormData($("#FormMaster").find("input,textarea,select,hidden").not("#__VIEWSTATE,#__EVENTVALIDATION, #__VIEWSTATEGENERATOR").serializeArray(), data);
+
+                    $.ajax({
+                        url: "/cap-nhat-gian-hang",
+                        type: 'POST',
+                        data: data,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        async: false,
+                        success: function (data) {
+                            if (data.Error)
+                                createMessageBox("", data.Message, data.Error);
+                            else
+                                createMessageBoxUrl("", data.Message, data.Error, location.href);
+
+                        }
+                    });
+                }
+
+            })
+        });
+    </script>
+}
+
+
+
+<input type="hidden" id="hdCity" />
+<input type="hidden" id="hdDistrict" />
+<input type="hidden" id="hdWard" />
+<input type="hidden" id="hdCityCode" />
+<input type="hidden" id="hdDistrictCode" />
+<input type="hidden" id="hdWardCode" />
+
+<div class="page-header card">
+    <div class="card-block">
+        <input type="hidden" name="ID" value="@Model.ID" />
+        <div class="form-horizontal">
+            <h4>Thêm mới gian hàng</h4>
+            <hr />
+
+            <div class="form-group mb-5">
+                <div class="control-label col-md-2">Ảnh đại diện <span class="red">*</span></div>
+
+                <div class=" col-2 p5">
+                    <div class="image-upload"><i hidden></i><img class="img-upload" src='/images/commons/@Model.Avatar' height="100%"></div>
+                    <input type="file" accept="image/x-png,image/gif,image/jpeg" id="fileupload" class="files" hidden onchange="loadImage2(event)" />
+                    <input type="hidden" name="hdfileupload1" />
+
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="control-label col-md-2">Tên gian hàng <span class="red">*</span></div>
+                <div class="col-md-12">
+                    <input type="text" placeholder="Tên cửa hàng" class="form-control" value="@Model.ShopName" required name="ShopName" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="control-label col-md-2">Mô tả cửa hàng</div>
+                <div class="col-md-12">
+                    <textarea placeholder="Nhập mô tả" class="form-control" value="@Model.Description" name="Description">@Model.Description</textarea>
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="control-label col-md-2">Email</div>
+                <div class="col-md-12">
+                    <input type="text" placeholder="Nhập email" value="@Model.Email" class="form-control" name="Email" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="control-label col-md-2">Điện thoại</div>
+                <div class="col-md-12">
+                    <input type="text" placeholder="Nhập số điện thoại" value="@Model.Phone" class="form-control" name="Phone" />
+
+                </div>
+            </div>
+
+            <div class="form-group container-fluid">
+                <div>Địa chỉ cửa hàng <span class="red">*</span></div>
+                <div class="row ">
+
+                    @*<div class="control-label col-md-2">Thành phố</div>*@
+                    <div class="col-4">
+                        <select class="form-control" id="ddlCity"></select>
+                    </div>
+                    <div class="col-4">
+                        <select class="form-control" id="ddlDistrict"></select>
+                    </div>
+                    <div class="col-4">
+                        <select class="form-control" id="ddlWard"></select>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" id="btnSubmit" value="Cập nhật" class="btn btn-success" />
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>

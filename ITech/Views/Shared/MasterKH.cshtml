@@ -1,0 +1,775 @@
+﻿@using ITech.Models;
+@{
+    ITechEntities db = new ITechEntities();
+    var lstDanhMucCha = db.Categories.Where(x => x.ParentCode == 0 && x.isDeleted == 1).ToList();
+}
+
+
+
+<!--
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <title>@ViewBag.Title</title>
+    <!-- Meta tag Keywords -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <meta name="keywords" content="Electro Store Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template, Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
+    <script>
+        addEventListener("load", function () {
+            setTimeout(hideURLbar, 0);
+        }, false);
+
+        function hideURLbar() {
+            window.scrollTo(0, 1);
+        }
+    </script>
+    <link rel="icon" href="~/Assets/images/logo2.png">
+    <!-- //Meta tag Keywords -->
+    <!-- Custom-Files -->
+    <link href="~/Assets/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+
+    <!-- Bootstrap css -->
+    <link href="~/Assets/css/style.css" rel="stylesheet" type="text/css" media="all" />
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="~/Assets/css/fontawesome-all.css">
+    <!-- Font-Awesome-Icons-CSS -->
+    <link href="~/Assets/css/popuo-box.css" rel="stylesheet" type="text/css" media="all" />
+    <!-- pop-up-box -->
+    <link href="~/Assets/css/menu.css" rel="stylesheet" type="text/css" media="all" />
+    <!-- menu style -->
+    <!-- //Custom-Files -->
+    <!-- web fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- //web fonts -->
+    <link rel="stylesheet" href="~/Assets/OwlCarousel2-2.3.4/dist/assets/owl.carousel.css">
+    <link rel="stylesheet" href="~/Assets/OwlCarousel2-2.3.4/dist/assets/owl.theme.default.min.css">
+    <link href="~/Content/PagedList.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="~/Assets/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+
+
+</head>
+
+<body>
+    <div id="masterform">
+        <!-- top-header -->
+        <div class="agile-main-top">
+            <div class="container-fluid">
+                <div class="row main-top-w3l py-2">
+                    <div class="col-3 header-most-top m-auto">
+                        <p class="text-white text-lg-left text-center">
+                            ITech - Thế giới công nghệ
+                            <i class="fas fa-shopping-cart ml-1"></i>
+                        </p>
+                    </div>
+                    <div class="col-9 header-right text-right mt-lg-0 mt-2">
+                        <!-- header lists -->
+                        <ul>
+                            @*<li class="text-center border-right text-white">
+            <a class="play-icon popup-with-zoom-anim text-white" href="#small-dialog1">
+                <i class="fas fa-map-marker mr-2"></i>Select Location
+            </a>
+        </li>*@
+
+
+                            <li class="text-center text-white">
+                                <a href="/trang-ban-hang" id="btn-dang-nhap-ban-hang" class="text-white">
+                                    <i class="fa fa-user-secret"></i> Kênh người bán
+                                </a>
+                            </li>
+                            @if (Session["user"] != null)
+                            {
+                                var user = Session["user"] as ITech.Models.User;
+
+
+
+                                <li class="text-center border-right text-white">
+                                    <a href="/theo-doi-don-hang" class="text-white">
+                                        <i class="fas fa-truck mr-2"></i>Theo dõi đơn hàng
+                                    </a>
+                                </li>
+                                <li class="text-center border-right text-white">
+                                    <a href="/lich-su-mua-hang" class="text-white">
+                                        <i class="fas fa-history mr-2"></i>Lịch sử mua hàng
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <img src="@user.Avatar" style="height:30px;" class="rounded-circle" /> @user.FullName.Trim()
+                                    </a>
+                                    <div class="dropdown-menu" id="navbarDropdownMenuLinkCN" aria-labelledby="navbarDropdownMenuLink">
+                                        <a style="line-height:40px;" class="dropdown-item" href="/thay-doi-thong-tin"><i class="fa fa-user"></i> Tài khoản của tôi</a>
+                                        <a style="line-height:40px;" class="dropdown-item" href="#"><i class="fa fa-truck"></i> Đơn mua</a>
+                                        <a style="line-height:40px;" class="dropdown-item" href="/AccountKH/Logout"><i class="fa fa-sign-out"></i> Đăng xuất</a>
+                                    </div>
+                                </li>
+
+
+                            }
+                            else
+                            {
+                                <li class="text-center border-right text-white">
+                                    <a href="/dang-nhap-tai-khoan" id="btn-dang-nhap" class="text-white">
+                                        <i class="fa fa-user"></i> Đăng Nhập
+                                    </a>
+                                </li>
+                                <li class="text-center text-white">
+                                    <a href="#" id="btn-dang-ky" class="text-white">
+                                        <i class="fas fa-sign-out-alt mr-2"></i>Đăng Ký
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                        <!-- //header lists -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- //top-header -->
+        <!-- header-bottom-->
+        <div class="header-bot">
+            <div class="container my-4">
+                <div class="row header-bot_inner_wthreeinfo_header_mid">
+                    <!-- logo -->
+                    <div class="col-md-3">
+                        <h1 class="text-center">
+                            <a href="/" class="font-weight-bold font-italic">
+                                <img src="../Assets//images/logo2.png" width="80%">
+                            </a>
+                        </h1>
+                    </div>
+                    <!-- //logo -->
+                    <!-- header-bot -->
+                    <div class="col-md-9 header mt-4 mb-md-0 mb-4">
+                        <div class="row">
+                            <!-- search -->
+                            <div class="col-10 agileits_search">
+                                <div class="form-inline">
+                                    <input class="form-control mr-sm-2" value="@ViewBag.TenSP" id="inputSearchMaster" type="search" placeholder="Nhập tên sản phẩm cần tìm kiếm..." aria-label="Search">
+                                    <button class="btn my-2 my-sm-0" id="btnSearchMaster" type="submit"><i class="fa fa-search"></i>Tìm Kiếm</button>
+                                </div>
+                            </div>
+                            <!-- //search -->
+                            <!-- cart details -->
+                            <div class="col-2 top_nav_right text-center mt-sm-0 mt-2">
+                                <div class="wthreecartaits wthreecartaits2 cart cart box_1">
+                                    <div class="last">
+                                        <button class="btn w3view-cart" type="button" id="btnGioHang" name="submit" value="">
+                                            <i class="fas fa-cart-arrow-down"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- //cart details -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @Html.Action("MenuPartial", "HomeKH", new { danhmuc = ViewBag.danhmuc })
+
+
+        <div>
+            @RenderBody()
+        </div>
+
+        <footer class="mt-3">
+
+            <div class="w3l-middlefooter-sec">
+                <div class="container py-md-5 py-sm-4 py-3">
+                    <div class="row footer-info w3-agileits-info">
+                        <!-- footer categories -->
+                        <div class="col-md-4 col-sm-6 footer-grids">
+                            <h3 class="text-white font-weight-bold mb-3">Danh mục</h3>
+                            <ul>
+                                @foreach (Category x in lstDanhMucCha)
+                                {
+                                    <li class="mb-3">
+                                        <a href="/tim-kiem?danhmuc=@x.ID">@x.Name </a>
+                                    </li>
+                                }
+
+                                
+                            </ul>
+                        </div>
+                        <!-- //footer categories -->
+                        <!-- quick links -->
+                        
+                        <div class="col-md-4 col-sm-6 footer-grids mt-md-0 mt-4">
+                            <h3 class="text-white font-weight-bold mb-3">Về chúng tôi</h3>
+                            <ul>
+                                <li class="mb-3">
+                                    <i class="fas fa-map-marker"></i>Tòa nhà Hacico, Thanh Xuân, Hà Nội
+                                </li>
+                                <li class="mb-3">
+                                    <i class="fas fa-mobile"></i>333 222 3333
+                                </li>
+                                <li class="mb-3">
+                                    <i class="fas fa-phone"></i>+222 11 4444
+                                </li>
+                                <li class="mb-3">
+                                    <i class="fas fa-envelope-open"></i>
+                                    <a href="mailto:example@mail.com">itech@example.com</a>
+                                </li>
+                                <li>
+                                    <i class="fas fa-envelope-open"></i>
+                                    <a href="mailto:example@mail.com">itechhelper@example.com</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4 col-sm-6 footer-grids w3l-agileits mt-md-0 mt-4">
+                            <!-- newsletter -->
+                            
+                            <!-- //newsletter -->
+                            <!-- social icons -->
+                            <div class="footer-grids  w3l-socialmk">
+                                <h3 class="text-white font-weight-bold mb-3">Theo dõi Itech trên</h3>
+                                <div class="social">
+                                    <ul>
+                                        <li>
+                                            <a class="icon fb" href="#">
+                                                <i class="fab fa-facebook-f"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="icon tw" href="#">
+                                                <i class="fab fa-twitter"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="icon gp" href="#">
+                                                <i class="fab fa-google-plus-g"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- //social icons -->
+                        </div>
+                    </div>
+                    <!-- //quick links -->
+                </div>
+            </div>
+            <!-- //footer third section -->
+            <!-- footer fourth section -->
+            <div class="agile-sometext py-md-5 py-sm-4 py-3">
+                <div class="container">
+                    <!-- brands -->
+                    <div class="sub-some">
+                        @foreach (Category c1 in lstDanhMucCha)
+                        {
+                            <h5 class="font-weight-bold mb-2">@c1.Name</h5>
+                            <ul>
+                                @foreach (Category c2 in db.Categories.Where(x => x.ParentCode == c1.ID && x.isDeleted == 1).ToList())
+                                {
+                                    <li class="m-sm-1">
+                                        <a href="/tim-kiem?danhmuc=@c2.ID" class="border-right pr-2">@c2.Name</a>
+                                    </li>
+                                }
+
+                            </ul>
+                        }
+
+
+                    </div>
+              
+                    <!-- //brands -->
+                    <!-- payment -->
+                    <div class="sub-some child-momu mt-4">
+                        <h5 class="font-weight-bold mb-3">Payment Method</h5>
+                        <ul>
+                            <li>
+                                <img src="../Assets/images/pay2.png" alt="">
+                            </li>
+                            <li>
+                                <img src="../Assets/images/pay5.png" alt="">
+                            </li>
+                            <li>
+                                <img src="../Assets/images/pay1.png" alt="">
+                            </li>
+                            <li>
+                                <img src="../Assets/images/pay4.png" alt="">
+                            </li>
+                            <li>
+                                <img src="../Assets/images/pay6.png" alt="">
+                            </li>
+                            <li>
+                                <img src="../Assets/images/pay3.png" alt="">
+                            </li>
+                            <li>
+                                <img src="../Assets/images/pay7.png" alt="">
+                            </li>
+                            <li>
+                                <img src="../Assets/images/pay8.png" alt="">
+                            </li>
+                            <li>
+                                <img src="../Assets/images/pay9.png" alt="">
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- //payment -->
+                </div>
+            </div>
+            <!-- //footer fourth section (text) -->
+        </footer>
+        <!-- //footer -->
+        <!-- copyright -->
+
+        <div class="copy-right py-3">
+            <div class="container">
+                <p class="text-center text-white">
+                    © 2018 Electro Store. All rights reserved | Design by
+                    <a href="http://w3layouts.com">W3layouts.</a>
+                </p>
+            </div>
+        </div>
+        <!-- //copyright -->
+
+    </div>
+    <!-- Modal -->
+    <div class="modal fade modal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Some text in the modal.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- js-files -->
+    <!-- jquery -->
+
+    <script src="../Assets/js/jquery-2.2.3.min.js"></script>
+
+    <script src="../Assets/js/CurrencyFormat.js"></script>
+    <!-- //jquery -->
+    <!-- nav smooth scroll -->
+    <script>
+        $(document).ready(function () {
+            $(".dropdown").hover(
+                function () {
+                    $('.dropdown-menu', this).stop(true, true).slideDown("fast");
+                    $(this).toggleClass('open');
+                },
+                function () {
+                    $('.dropdown-menu', this).stop(true, true).slideUp("fast");
+                    $(this).toggleClass('open');
+                }
+            );
+        });
+    </script>
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- //nav smooth scroll -->
+    <!-- popup modal (for location)-->
+    <script src="../Assets/js/jquery.magnific-popup.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.popup-with-zoom-anim').magnificPopup({
+                type: 'inline',
+                fixedContentPos: false,
+                fixedBgPos: true,
+                overflowY: 'auto',
+                closeBtnInside: true,
+                preloader: false,
+                midClick: true,
+                removalDelay: 300,
+                mainClass: 'my-mfp-zoom-in'
+            });
+
+        });
+    </script>
+    <!-- //popup modal (for location)-->
+    <!-- cart-js -->
+    <script src="../Assets/js/minicart.js"></script>
+    <script>
+        paypals.minicarts.render(); //use only unique class names other than paypals.minicarts.Also Replace same class name in css and minicart.min.js
+
+        paypals.minicarts.cart.on('checkout', function (evt) {
+            var items = this.items(),
+                len = items.length,
+                total = 0,
+                i;
+
+            // Count the number of each item in the cart
+            for (i = 0; i < len; i++) {
+                total += items[i].get('quantity');
+            }
+
+            if (total < 3) {
+                alert('The minimum order quantity is 3. Please add more to your shopping cart before checking out');
+                evt.preventDefault();
+            }
+        });
+    </script>
+    <!-- //cart-js -->
+    <!-- password-script -->
+    @*<script>
+            window.onload = function () {
+                document.getElementById("password1").onchange = validatePassword;
+                document.getElementById("password2").onchange = validatePassword;
+            }
+
+            function validatePassword() {
+                var pass2 = document.getElementById("password2").value;
+                var pass1 = document.getElementById("password1").value;
+                if (pass1 != pass2)
+                    document.getElementById("password2").setCustomValidity("Passwords Don't Match");
+                else
+                    document.getElementById("password2").setCustomValidity('');
+                //empty string means no validation error
+            }
+        </script>*@
+    <!-- //password-script -->
+    <!-- scroll seller -->
+    <script src="../Assets/js/scroll.js"></script>
+    <!-- //scroll seller -->
+    <!-- smoothscroll -->
+    <!-- imagezoom -->
+    <script src="/Assets/js/imagezoom.js"></script>
+    <!-- //imagezoom -->
+    <!-- flexslider -->
+    <link rel="stylesheet" href="/Assets/css/flexslider.css" type="text/css" media="screen" />
+
+    <script src="/Assets/js/jquery.flexslider.js"></script>
+    <script>
+        // Can also be used with $(document).ready()
+        $(window).load(function () {
+            $('.flexslider').flexslider({
+                animation: "slide",
+                controlNav: "thumbnails"
+            });
+        });
+    </script>
+    <!-- //FlexSlider-->
+    @* <script src="../Assets/js/SmoothScroll.min.js"></script>*@
+    <!-- //smoothscroll -->
+    <!-- start-smooth-scrolling -->
+    <script src="../Assets/js/move-top.js"></script>
+    <script src="../Assets/js/easing.js"></script>
+    <script>
+        jQuery(document).ready(function ($) {
+            $(".scroll").click(function (event) {
+                // event.preventDefault();
+
+                $('html,body').animate({
+                    scrollTop: $(this.hash).offset().top
+                }, 1000);
+            });
+        });
+    </script>
+    <!-- //end-smooth-scrolling -->
+    <!-- smooth-scrolling-of-move-up -->
+
+    <script>
+        $(document).ready(function () {
+            /*
+            var defaults = {
+                containerID: 'toTop', // fading element id
+                containerHoverID: 'toTopHover', // fading element hover id
+                scrollSpeed: 1200,
+                easingType: 'linear'
+            };
+            */
+            $().UItoTop({
+                easingType: 'easeOutQuart'
+            });
+
+        });
+    </script>
+    <!-- //smooth-scrolling-of-move-up -->
+    <!-- quantity -->
+    <script>
+        function UpdateQuantity(d) {
+            $('.txtThanhTien-' + d.Data.ID).text('₫ ' + (d.Data.ThanhTien));
+            $('.txtThanhTien-' + d.Data.ID).data('price', (d.Data.ThanhTienVal));
+            $('.iTemCart-' + d.Data.ID).data('thanhtien', (d.Data.ThanhTienVal));
+            var total = 0;
+            $('.checkboxChild:checked').each(function () {
+                var thanhtien = $(this).data('thanhtien');
+                total += thanhtien;
+            });
+
+            $('.MoneyTotal').text('₫' + formatMoney(total));
+            $('.MoneyTotal').data('mtotal', (total));
+            console.log($('.MoneyTotal').data('mtotal'));
+
+            $('.totalMoney').text('₫' + formatMoney(total));
+            $('.totalMoney').data('mtotal', (total));
+            console.log($('.totalMoney').data('mtotal'));
+
+
+        }
+
+        $('.value-plus').on('click', function () {
+            var divUpd = $(this).parent().find('.value'),
+                newVal = parseInt(divUpd.text(), 10) + 1;
+            divUpd.text(newVal);
+            $('#txtQty').val(newVal);
+            $.post("/Cart/UpdateQuantity", { Qty: newVal, Id: $(this).data('id') }, function (d) {
+                if (d.Error == true) {
+                    createMessageBox("Có lỗi xảy ra, vui lòng thử lại");
+
+                }
+                else {
+                    UpdateQuantity(d);
+                }
+
+
+            });
+        });
+
+
+
+        $('.value-minus').on('click', function () {
+            var divUpd = $(this).parent().find('.value'),
+                newVal = parseInt(divUpd.text(), 10) - 1;
+            if (newVal >= 1) {
+                divUpd.text(newVal);
+                $('#txtQty').val(newVal);
+                $.post("/Cart/UpdateQuantity", { Qty: newVal, Id: $(this).data('id') }, function (d) {
+                    if (d.Error == true) {
+                        createMessageBox("Có lỗi xảy ra, vui lòng thử lại");
+
+                    }
+                    else {
+                        UpdateQuantity(d);
+
+                    }
+                });
+            }
+        });
+
+        $('.removeProductCart').on('click', function () {
+            var id = $(this).data('id');
+            createMessageBoxConfirm("", "Xóa sản phẩm khỏi giỏ hàng?", function (confirm) {
+
+                if (confirm) {
+                    $.post("/Cart/RemoveProductCart", { Id: id }, function (d) {
+                        if (d.Error == true) {
+                            createMessageBox("Có lỗi xảy ra, vui lòng thử lại");
+
+                        }
+                        else {
+                            console.log(d);
+                            $('.product-' + d.Data.ID).remove();
+                            if ($('.product-' + d.Data.ShopID).length <= 0) {
+                                $('.productHead-' + d.Data.ShopID).remove();
+                            }
+                        }
+                    });
+                }
+            })
+
+        });
+
+
+
+    </script>
+    <!--quantity-->
+
+
+    <script src="../Assets/OwlCarousel2-2.3.4/docs/assets/owlcarousel/owl.carousel.js"></script>
+    <script>
+        $('.owl-carousel').owlCarousel({
+            loop: true,
+            margin: 10,
+            nav: true,
+            responsive: {
+                0: {
+                    items: 3
+                },
+                600: {
+                    items: 4
+                },
+                1000: {
+                    items: 6
+                }
+            }
+        })
+    </script>
+    <!-- for bootstrap working -->
+    <script src="../Assets/js/bootstrap.js"></script>
+    <script src="~/Assets/js/select2.js"></script>
+    <script src="~/Assets/js/jquery.validate.min.js"></script>
+    <!-- //for bootstrap working -->
+    <!-- //js-files -->
+    <script src="~/Assets/js/sweetalert2.all.min.js"></script>
+    <script src="../Assets/js/util.js"></script>
+    <script>
+        $(document).ready(function () {
+            if (sessionStorage.objMyCart != null) {
+                var obj = JSON.parse(sessionStorage.objMyCart);
+
+                    createMessageBoxConfirm2("", "Bạn vẫn tiếp tục muốn thêm " + obj.name + " vào giỏ hàng ?", function (confirm) {
+                        if (confirm) {
+                            $.post("/Cart/AddToCart", { ProductID: obj.id, Quantity: obj.quantity }, function (data) {
+                                createMessageBox("", data.Message, data.Error);
+
+                            }).then(function () { sessionStorage.clear();});
+                        }
+                        else {
+                            sessionStorage.clear();
+                        }
+                    })
+
+
+            }
+
+
+            $('#inputSearchMaster').on('keypress', function () {
+                $.post("/HomeKH/GetProducts", { key: $(this).val() }, function (data) {
+                    $("#inputSearchMaster").autocomplete({
+                        source: data
+                    });
+                })
+            })
+            $("#btnSearchLeft").click(function (e) {
+                e.preventDefault();
+                //if ($('#inputSearchMaster').val().trim()!="")
+                location.href = "/tim-kiem?TenSP=" + $('#fieldSearch').val() + "&danhmuc=" + $("#agileinfo-nav_search").val();
+
+            })
+
+            $('#btnSearchMaster').click(function (e) {
+                e.preventDefault();
+                if ($('#inputSearchMaster').val().trim()!="")
+                location.href = "/tim-kiem?TenSP=" + $('#inputSearchMaster').val() + "&danhmuc=" + $("#agileinfo-nav_search").val();
+            });
+
+            $('#btnGioHang').click(function (e) {
+                e.preventDefault();
+                location.href = "/gio-hang";
+            })
+
+            $('.btnThemGio').click(function (e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                var name = $(this).data('name');
+                var quantity = $('#txtQty').val();
+                console.log(quantity)
+                var user = '@Session["user"]';
+                if (user == '') {
+                    createMessageBoxConfirm2("", "Vui lòng đăng nhập để có thể thêm sản phẩm này vào giỏ ?", function (confirm) {
+
+                        if (confirm) {
+                            var objMyCart = {
+                                id: id,
+                                name: name,
+                                quantity: quantity
+                            };
+                            sessionStorage.setItem('objMyCart', JSON.stringify(objMyCart));
+                            //sessionStorage.setItem('url', location.href);
+
+                            @{ Session["Return"] = Request.Url.PathAndQuery;}
+                            location.href = "/dang-nhap-tai-khoan";
+                        }
+                    })
+                    return false;
+                }
+                createMessageBoxConfirm("", "Bạn muốn thêm sản phẩm " + name + " vào giỏ hàng", function (confirm) {
+
+                    if (confirm) {
+                        $.post("/Cart/AddToCart", { ProductID: id, Quantity: quantity }, function (data) {
+                            createMessageBox("", data.Message, data.Error);
+                        });
+                    }
+                })
+            })
+
+            $('.btnThemGio2').click(function (e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                var name = $(this).data('name');
+                var quantity = $('#txtQty').val();
+                console.log(quantity)
+                var user = '@Session["user"]';
+                if (user == '') {
+                    createMessageBoxConfirm2("", "Vui lòng đăng nhập để có thể thêm sản phẩm này vào giỏ ?", function (confirm) {
+
+                        if (confirm) {
+                            var objMyCart = {
+                                id: id,
+                                name: name,
+                                quantity: quantity
+                            };
+                            sessionStorage.setItem('objMyCart', JSON.stringify(objMyCart));
+                            //sessionStorage.setItem('url', location.href);
+
+                            @{ Session["Return"] = Request.Url.PathAndQuery;}
+                            location.href = "/dang-nhap-tai-khoan";
+                        }
+                    })
+                    return false;
+                }
+                createMessageBoxConfirm("", "Sản phẩm "+name+" sẽ được hiển thị trong giỏ hàng của bạn khi người bán mở cửa trở lại ! Bạn vẫn muốn thêm nó vào giỏ hàng", function (confirm) {
+
+                    if (confirm) {
+                        $.post("/Cart/AddToCart", { ProductID: id, Quantity: quantity }, function (data) {
+                            createMessageBox("", data.Message, data.Error);
+                        });
+                    }
+                })
+            })
+
+
+            $('#btn-dang-ky').click(function (e) {
+                e.preventDefault();
+                $.get("/AccountKH/Register", function (d) {
+                    openModal("Đăng ký", d);
+                })
+            })
+           
+
+        })
+
+        function SearchByGia(gia) {
+            location.href = "/tim-kiem?TenSP=" + $('#fieldSearch').val() + "&danhmuc=" + $("#agileinfo-nav_search").val() + "&gia=" + gia;
+            return false;
+        }
+
+        function SearchByDanhMuc(id) {
+            location.href = "/tim-kiem?danhmuc=" + id;
+        }
+        
+
+
+
+
+    </script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="~/Assets/js/bootstrap-datepicker.min.js"></script>
+    <script src="~/Assets/js/bootstrap-datepicker.vi.min.js"></script>
+
+    @RenderSection("script", required: false)
+
+</body>
+
+</html>

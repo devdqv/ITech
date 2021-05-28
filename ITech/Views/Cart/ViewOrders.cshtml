@@ -1,0 +1,221 @@
+﻿@using ITech.Models;
+@{
+
+    ViewBag.Title = "Thanh toán đơn hàng";
+    Layout = "~/Views/Shared/MasterKH.cshtml";
+}
+
+
+@section script{
+    <script>
+        $(document).ready(function () {
+
+            $('.btnCancelOrder').click(function (e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                var button = $(this).parent('p').parent('div').parent('div').parent('div');
+                createMessageBoxConfirm("Thông báo", "Bạn có chắc chắn muốn hủy đơn " + id + "?", function (c) {
+                    if (c) {
+                        $.post("/Cart/CancelOrder", { id: id }, function (d) {
+                            createMessageBox("", d.Message, d.Error);
+
+                        }).then(function () {
+                            button.remove();
+
+                        })
+                    }
+                })
+
+            })
+
+            $('.btnConfirmDelivery').click(function (e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                var button = $(this).parent('p').parent('div').parent('div').parent('div');
+                createMessageBoxConfirm("Thông báo", "Đơn hàng đã được giao tới tôi ?", function (c) {
+                    if (c) {
+                        $.post("/Cart/ConfirmDelivery", { code: id }, function (d) {
+                            createMessageBox("", d.Message, d.Error);
+                            if (d.Error == false) {
+                                button.remove();
+                            }
+                        })
+                    }
+                  
+                })
+
+            })
+        })
+    </script>
+}
+
+<div class="services-breadcrumb">
+    <div class="agile_inner_breadcrumb">
+        <div class="container">
+            <ul class="w3_short">
+                <li>
+                    <a href="/">Trang chủ</a>
+                    <i>|</i>
+                </li>
+                <li>Theo dõi đơn hàng</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- //page -->
+<!-- checkout page -->
+
+
+<div class="privacy py-sm-5 py-4">
+    <div class="container py-xl-4 py-lg-2">
+        <!-- tittle heading -->
+        <h3 class="tittle-w3l text-left mb-lg-5 mb-sm-4 mb-3 color-buy-now">CÁC ĐƠN HÀNG ĐÃ ĐẶT</h3>
+
+
+        <div class="container">
+            @foreach (Order item in ViewBag.Orders)
+            {
+                var s = GetObj.GetSaleman(item.ShopID);
+                <div>
+                    <div class="row bg-light mt-5 p-3 shadow rounded">
+                        <div class="col-12">
+                            <p class="h6 color-buy-now">Mã ĐH: @item.OrderCode</p>
+                            <p class="h6">Cửa hàng: <span class="color-add-cart"> @s.ShopName</p>
+                            <p class="h6">Thời gian đặt: <span class="color-add-cart"> @item.OrderDate.Value.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+                            <p class="h6">Trạng thái: <span class="color-add-cart trangthai-@item.OrderCode"> @(item.Status == HangSo.ChoXacNhan ? "Đang chờ xác nhận" : item.Status == HangSo.DaXacNhan ? "Đã xác nhận và đang giao" : "")</p>
+                            <div>Được gửi từ (<b>@s.WardName, @s.DistrictName, @s.CityName</b> đến<b> @item.Address</b>)</div>
+                            <br />
+                            @if (item.Status == HangSo.ChoXacNhan)
+                            {
+                                <p><button class="btn btn-danger btnCancelOrder" data-id="@item.OrderCode"><i class="fa fa-remove"></i> Hủy đơn</button></p>
+                            }
+                            else if (item.Status == HangSo.DaXacNhan)
+                            {
+                                <p><button class="btn btn-primary btnConfirmDelivery" data-id="@item.OrderCode"><i class="fa fa-check"></i> Xác nhận đã nhận hàng</button></p>
+
+                            }
+                          
+
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        @foreach (OrderDetail x in ViewBag.OrderDetails)
+                        {
+                            if (x.Product.ShopID == item.ShopID && x.OrderID == item.ID)
+                            {
+                                <div class="checkout-right">
+
+                                    <div class="table-responsive">
+                                        <table class="timetable_sub">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:30%">Sản phẩm</th>
+                                                    <th style="width:10%">Số lượng</th>
+                                                    <th style="width:20%">Đơn giá</th>
+                                                    <th style="width:20%">Số tiền</th>
+
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr class="rem1 product-item product-@x.ID product-@s.ID" data-id="@x.ProductID" data-shopitem="@s.ID" data-qty="@x.Quantity">
+                                                    <td class="invert-image">
+                                                        <a href="/chi-tiet-san-pham?id=@x.Product.ID&name=@x.Product.Title">
+                                                            <div class="row">
+                                                                <div class="col-3"><img src="/images/@x.Product.Image"></div>
+                                                                <div class="col-9">@x.Product.Title</div>
+                                                            </div>
+
+                                                        </a>
+                                                    </td>
+                                                    <td class="invert text-center">
+                                                        <span class="qty-@x.ID" data-qty="@x.Quantity">@x.Quantity</span>
+                                                    </td>
+                                                    <td class="invert text-center"><p3><del style="opacity:0.5;">₫@string.Format("{0:#,###}", x.Product.OldPrice)</del></p3> <p3>₫@string.Format("{0:#,###}", x.Product.Price)</p3></td>
+                                                    <td class="invert text-center"><span class="txtThanhTien-@x.ID" data-price="@(x.Product.Price*x.Quantity)">₫@string.Format("{0:#,###}", x.Quantity * x.Product.Price)</span></td>
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            }
+
+                        }
+                    </div>
+                </div>
+
+            }
+        </div>
+        <!-- //tittle heading -->
+        @*<div class="checkout-right">
+
+                <div class="table-responsive">
+                    <table class="timetable_sub">
+                        <thead>
+                            <tr>
+                                <th style="width:30%">Sản phẩm</th>
+                                <th>Số lượng</th>
+                                <th>Đơn giá</th>
+                                <th>Số tiền</th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (Order item in ViewBag.Orders)
+                            {
+                                var s = GetObj.GetSaleman(item.ShopID);
+
+                                <tr class="product-shop">
+
+                                    <td colspan="6">
+                                        <h5>Mã đơn hàng: @item.OrderCode <br />@s.ShopName</h5>
+                                        Được gửi từ (<b>@s.WardName, @s.DistrictName, @s.CityName</b> đến<b> @item.Address</b>)
+                                    </td>
+                                </tr>
+                                foreach (OrderDetail x in ViewBag.OrderDetails)
+                                {
+                                    if (x.Product.ShopID == item.ShopID)
+                                    {
+
+                                        <tr class="rem1 product-item product-@x.ID product-@s.ID" data-id="@x.ProductID" data-shopitem="@s.ID" data-qty="@x.Quantity">
+                                            <td class="invert-image">
+                                                <a href="/chi-tiet-san-pham?id=@x.Product.ID&name=@x.Product.Title">
+                                                    <div class="row">
+                                                        <div class="col-3"><img src="/images/@x.Product.Image"></div>
+                                                        <div class="col-9">@x.Product.Title</div>
+                                                    </div>
+
+                                                </a>
+                                            </td>
+                                            <td class="invert text-center">
+                                                <span class="qty-@x.ID" data-qty="@x.Quantity">@x.Quantity</span>
+                                            </td>
+                                            <td class="invert text-center"><p3><del style="opacity:0.5;">₫@string.Format("{0:#,###}", x.Product.OldPrice)</del></p3> <p3>₫@string.Format("{0:#,###}", x.Product.Price)</p3></td>
+                                            <td class="invert text-center"><span class="txtThanhTien-@x.ID" data-price="@(x.Product.Price*x.Quantity)">₫@string.Format("{0:#,###}", x.Quantity * x.Product.Price)</span></td>
+
+                                        </tr>
+
+                                    }
+
+                                }
+                                <tr>
+                                    <input type="hidden" class="feeToShop" id="feeToShop-@s.ID" />
+                                    <td colspan="6">Phí vận chuyển: <span class="h6 totalMoney  feeToShopText  feeShip-@s.ID" style="color: #F45C5D;">₫@string.Format("{0:#,###}", item.FeeShip)</span></td>
+                                </tr>
+                            }
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>*@
+
+
+    </div>
+</div>
+<!-- //checkout page -->

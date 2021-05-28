@@ -1,0 +1,116 @@
+﻿@using ITech.Models;
+@{
+
+    var lstDMCha = ViewBag.lstDMCha as List<Category>;
+    Category objDM = ViewBag.objDM;
+}
+
+<script>
+    $(document).ready(function () {
+        
+        IDasName();
+        $('.img-upload').click(function (e) {
+            e.preventDefault();
+            $("#fileupload").click();
+        });
+        $('#btnSubmit').click(function (e) {
+            e.preventDefault();
+            if (!validate())
+                return false;
+            var data = new FormData();
+            var DoAction = '@ViewBag.DoAction';
+            var files = $('#fileupload').get(0).files;
+            if (files.length == 0 && DoAction != "edit") {
+                createMessageBoxWarning("", "Bạn phải chọn ảnh");
+                return false;
+            }
+            data.append('fileupload', files[0]);
+            var dt = $("#frmThemDanhMuc").find("input,textarea,select,hidden").not("#__VIEWSTATE,#__EVENTVALIDATION, #__VIEWSTATEGENERATOR").serializeArray();
+
+            AppendArrFormData(dt, data); //util.js
+            $.ajax({
+                url: '/DanhMuc/pAction',
+                type: 'POST',
+                data: data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                async: false,
+                success: function (data) {
+                    if (data.Error) {
+                        createMessageBox("", data.Message, data.Error);
+                    }
+                    else {
+                        createMessageBoxUrl("", data.Message, data.Error, "/danh-muc", location.pathname);
+
+                    }
+                }
+            });
+        })
+
+
+    });
+</script>
+<form id="frmThemDanhMuc">
+    <input type="hidden" id="do" name="do" value="@ViewBag.DoAction" />
+    <input type="hidden" id="id" name="itemID" value="@ViewBag.ArrID" />
+    <div class="page-header card">
+        <div class="card-block">
+            <div class="col-12 my-3">
+                <div class="row py-4">
+                    <div class="col-4">
+                        Tên <span class="red">*</span>
+                        <input type="text" name="txtDM" value="@( objDM==null?string.Empty: objDM.Name)" id="txtDM" class="required form-control" />
+                        <label class="message"></label>
+                    </div>
+                    <div class="col-4">
+                        Danh Mục Cha
+                        <select id="ddlDMCha" class="form-control">
+                            <option value="0">--Không--</option>
+                            @foreach (Category x in ViewBag.lstDMCha)
+                            {
+                                
+
+                                    if (objDM==null? false: (objDM.ParentCode == x.ID?true:false))
+                                    {
+                                        <option selected="selected" value="@x.ID">@x.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@x.ID">@x.Name</option>
+                                    }
+
+                               
+                            }
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        Thứ Tự
+                        <input id="txtSTT" type="number" value="@(objDM==null?ViewBag.STTMax: objDM.STT)" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="row py-4">
+                    <div class="col-2">
+                        <input type="file" accept="image/x-png,image/gif,image/jpeg" id="fileupload" class="files" hidden onchange="loadImage(event)" />
+                        <button class="btn img-upload btn-buy-now"><i class="ti-upload"></i> Chọn Ảnh</button>
+
+                    </div>
+                    <div class="col-2">
+                        <img id="output" src="@(objDM==null?"": "/images/commons/"+objDM.Image)" class="img-circle" style="width:80px" />
+                    </div>
+
+                </div>
+                <div class="row py-4">
+                    <div class="col-4">
+                        <button id="btnSubmit" class="btn btn-success"><i class="ti-save"></i> @ViewBag.strSubmit</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <hr />
+
+
+</form>

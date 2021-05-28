@@ -1,0 +1,87 @@
+﻿
+@{
+    Layout = null;
+}
+<script src="~/Assets/js/bootstrap-datepicker.min.js"></script>
+<script src="~/Assets/js/bootstrap-datepicker.vi.min.js"></script>
+<script src="~/Assets/js/util.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.btnSubmit').click(function (e) {
+            e.preventDefault();
+            var html = ' <div class="alert alert-success">' +
+                '<strong>Đăng ký thành công!</strong> Vui lòng kiểm tra email để tiếp tục !' +
+                '</div>';
+            if ($('#frmDangKy').valid()) {
+
+                var dt = $("#frmDangKy").find("input,textarea,select,hidden").not("#__VIEWSTATE,#__EVENTVALIDATION, #__VIEWSTATEGENERATOR").serialize();
+                $.post("AccountKH/Register", dt, function (d) {
+                    if (d.Error == false) {
+
+                        $('.message-alert').html(html);
+                        document.getElementById('frmDangKy').reset();
+                    }
+                    else {
+                        createMessageBox("", d.Message, d.Error)
+                    }
+                })
+            }
+            return false;
+
+        })
+    })
+</script>
+
+<div class="container">
+    <div class="message-alert"></div>
+    <form id="frmDangKy">
+        <div class="form-group">
+            <label class="col-form-label">Họ và tên</label> <br />
+            <input type="text" class="form-control" placeholder=" " name="FullName" required="">
+        </div>
+        <div class="form-group">
+            <label class="col-form-label">Email</label><br />
+            <input type="email" class="form-control" placeholder=" " name="Email" required="">
+        </div>
+        <div class="form-group">
+            <label class="col-form-label">Ngày sinh</label><br />
+            <input type="text" class="form-control datepicker" placeholder=" " name="DateBirth" required="">
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-3">
+                    Giới tính
+                </div>
+                <div class="col-9">
+                    <input type="radio" name="Gender" value="1" />Nam
+                    <input type="radio" name="Gender" value="0" />Nữ
+                </div>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="col-form-label">Số điện thoại</label><br />
+            <input type="tel" class="form-control" placeholder=" " name="Phone" required="">
+        </div>
+        <div class="form-group">
+            <label class="col-form-label">Mật khẩu</label><br />
+            <input type="password" class="form-control" placeholder=" " name="Password" required="">
+        </div>
+        <div class="form-group">
+            <label class="col-form-label">Xác nhận mật khẩu</label><br />
+            <input type="password" class="form-control" placeholder="" name="ConfirmPassword" required="">
+        </div>
+        <div class="sub-w3l">
+            <div class="custom-control custom-checkbox mr-sm-2">
+                <input type="checkbox" class="custom-control-input" required id="customControlAutosizing2">
+                <label class="custom-control-label" for="customControlAutosizing2">Tôi chấp nhận với các điều khoản & chính sách bảo mật của ITech</label>
+            </div>
+        </div>
+        <div class="right-w3l">
+            <input type="submit" class="form-control btnSubmit" value="Đăng Ký">
+        </div>
+
+
+    </form>
+
+</div>

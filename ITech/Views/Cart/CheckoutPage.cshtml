@@ -1,0 +1,359 @@
+﻿@using ITech.Models;
+@{
+
+    ViewBag.Title = "Thanh toán đơn hàng";
+    Layout = "~/Views/Shared/MasterKH.cshtml";
+}
+@{
+    var address = ViewBag.Address as List<AddressDeliver>;
+    AddressDeliver adDefault = null;
+    if (address != null)
+    {
+        adDefault = address.SingleOrDefault(x => x.Default == 1);
+    }
+    AddressDeliver DiaChiNhanHang = ViewBag.DiaChiNhanHang as AddressDeliver;
+
+}
+@section script{
+    <script>
+        var urlGetDichVu = "https://online-gateway.ghn.vn/shiip/public-api/master-data/ward";
+        localStorage.setItem('token', "4427424b-9ccc-11eb-9035-ae038bcc764b");
+        localStorage.setItem('shop_id', "1562788"); //mac dinh cua vinh
+        $(document).ready(function () {
+
+            $('.btnDatHang').click(function (e) {
+                e.preventDefault();
+                createMessageBoxConfirm("Thông báo", "Xác nhận đặt hàng", function (confirm) {
+                    if(confirm) {
+
+                        var arrOrder = [];
+                        $('.product-shop').each(function () {
+                            var shopid = $(this).data('shop');
+
+                            var OrderDetails = [];
+                            $('.product-item').each(function () {
+                                var productid = $(this).data('id');
+                                var productShopID = $(this).data('shopitem');
+                                var CartID = $(this).data('cartid');
+                                var qty = $(this).data('qty');
+                                if (productShopID == shopid)
+                                    OrderDetails.push({ "ProductID": productid, "Quantity": qty, "ID": CartID })
+
+                            })
+                            var Order = { "FeeShip": $('#feeToShop-' + shopid).val(), "ShopID": shopid, "AddressDelivery": '@DiaChiNhanHang.ID', "OrderItem": OrderDetails };
+                            arrOrder.push(Order);
+                        })
+                        $.post("/Cart/Checkout", { request: arrOrder }, function (d) {
+                            if (d.Error == false)
+                                createMessageBoxUrl("Thông báo", d.Message, d.Error, "/theo-doi-don-hang");
+                            else
+                                createMessageBox("Thông báo", d.Message, d.Error);
+
+                        })
+                    }
+                })
+            })
+
+
+
+            $('.btnThemDiaChiMoi').click(function (e) {
+                e.preventDefault();
+                $.get("/Cart/ThemAddressDelivery", function (d) {
+                    openModal("Thêm mới địa chỉ nhận hàng", d);
+                })
+            })
+            $('.setupAddress').click(function (e) {
+                e.preventDefault();
+                $.get("/Cart/EditAddressDelivery", { id: $(this).data('id') }, function (d) {
+                    openModal("Thiết lập địa chỉ nhận hàng", d);
+                })
+            })
+
+            $('.btnSetDiaChi').click(function (e) {
+                e.preventDefault();
+                $('#hdDiaChiNhanHang').val($('input[name="radAdress"]:checked').val());
+                $("#lstDiaChiGiaoHang").toggle();
+
+                $.ajax({
+                    url: '/Cart/GetAddressDelivery',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { id: $('#hdDiaChiNhanHang').val() },
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (d) {
+                        console.log(d)
+                        $('.TenVaSDT').html(d.Data.Cus_name + " (" + d.Data.Cus_phone + ")");
+                        $('.DiaChi').html(d.Data.ApartmentNumber + ", " + d.Data.Ward + ", " + d.Data.District + ", " + d.Data.City);
+                        $('.DChiMacDinh').html(d.Data.Default == 1 ? "Mặc định" : "");
+                        $('#hdDiaChiNhanHang').val(d.Data.ID);
+
+                    }
+                });
+                //$.get("/Cart/GetAddressDelivery", { id: $('#hdDiaChiNhanHang').val() }, function (d) {
+                //    console.log(d)
+                //    $('.TenVaSDT').html(d.Data.Cus_name + "(" + d.Data.Cus_phone + ")");
+                //})
+            })
+
+            $('#changeAddress').click(function (e) {
+                e.preventDefault();
+                $("#lstDiaChiGiaoHang").toggle();
+            })
+
+            $('.feeToShop').val("0");
+            $('.feeToShopText').text("");
+
+            $.post("/Cart/GetInforCheckout", { ArrID: $('#ArrID').val(), DiaChiNhanHang: $('#hdDiaChiNhanHang').val() }, function (d) {
+
+                Object.keys(d.Data.lstShop).forEach(function (s) {
+                    s = d.Data.lstShop[s];
+
+                    Object.keys(d.Data.SanPhamsOrder).forEach(function (x) {
+                        x = d.Data.SanPhamsOrder[x];
+
+                        if (x.ShopID == s.ID) {
+                             console.log("x.Weight "+x.Weight);
+                            console.log("x.Height " +x.Height);
+                            console.log("x.Length " +x.Length);
+                            console.log("x.Width " +x.Width);
+                            console.log("x.DistrictCodeFrom " +s.DistrictCode);
+                            console.log("x.WardCodeTo " +d.Data.WardCode);
+                            console.log("x.DistrictCodeTo " + d.Data.DistrictCode);
+                            console.log("x.Price " +x.Price);
+                            console.log("--------")
+                            TinhPhiVanChuyen(x.Weight, x.Height, x.Length, x.Width, s.DistrictCode.trim(), d.Data.DistrictCode.trim(), d.Data.WardCode.trim(), x.Price, x.ShopID.trim(), x.Quantity);
+
+                        }
+
+                    })
+                    // console.log(feeShop)
+
+                })
+                var phisip = 0;
+                $('.feeToShop').each(function () {
+                    phisip += parseInt($(this).val());
+
+                })
+                setTimeout(() => {
+                    $('.feeToShopTextTotal').text("₫" + formatMoney(phisip));
+                }, 100)
+            })
+
+
+        })
+        async function TinhPhiVanChuyen(w, h, l, wd, from_district, to_district, to_ward, price, shopid, qty) {
+            var total = 1;
+            var request = {
+                "service_type_id": 2,
+                "insurance_value": 1000000,
+                "coupon": null,
+                "from_district_id": from_district,
+                "to_district_id": to_district,
+                "to_ward_code": to_ward,
+                "height": h,
+                "length": l,
+                "weight": w,
+                "width": wd
+            }
+            $.ajax({
+                type: "get",
+                url: "https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee",
+                data: request,
+                dataType: "json",
+                async: false,
+                headers: { "token": localStorage.getItem('token'), "shop_id": localStorage.getItem('shop_id') },
+                success: function (d) {
+                    $('#feeToShop-' + shopid).val(parseInt($('#feeToShop-' + shopid).val()) + (d.data.service_fee) * qty);
+                    $('.feeShip-' + shopid).text("₫" + formatMoney($('#feeToShop-' + shopid).val()));
+
+                }
+            })
+
+        }
+    </script>
+}
+
+<div class="services-breadcrumb">
+    <div class="agile_inner_breadcrumb">
+        <div class="container">
+            <ul class="w3_short">
+                <li>
+                    <a href="/">Trang chủ</a>
+                    <i>|</i>
+                </li>
+                <li>Thanh toán</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- //page -->
+<!-- checkout page -->
+<input type="hidden" id="Phivanchuyen" />
+<input type="hidden" id="ArrID" value="@ViewBag.ArrID" />
+
+@if (DiaChiNhanHang == null)
+{
+    <input type="hidden" id="hdDiaChiNhanHang" value="" />
+
+}
+else
+{
+    <input type="hidden" id="hdDiaChiNhanHang" value="@DiaChiNhanHang.ID" />
+
+}
+<div class="privacy py-sm-5 py-4">
+    <div class="container py-xl-4 py-lg-2">
+        <!-- tittle heading -->
+        <h3 class="tittle-w3l text-left mb-lg-5 mb-sm-4 mb-3"></h3>
+        <div class="row my-3" style="width: 100%;">
+
+            <div class="col-12 location-text my-3">Địa chỉ nhận hàng</div>
+            @if (DiaChiNhanHang != null)
+            {
+                <div class="col-4 h6 TenVaSDT">@DiaChiNhanHang.Cus_name (@DiaChiNhanHang.Cus_phone)</div>
+                <div class="col-7 h6 DiaChi">@DiaChiNhanHang.ApartmentNumber, @DiaChiNhanHang.Ward, @DiaChiNhanHang.District, @DiaChiNhanHang.City</div>
+                <div class="col-1 DChiMacDinh">@(DiaChiNhanHang.Default == 1 ? "Mặc định" : "")</div>
+                //<div class="col-1"><a href="javascript:;" id="changeAddress">Thay đổi</a></div>
+            }
+           
+
+
+
+        </div>
+
+        
+        <div class="row bg-light my-3" style="width: 100%;">
+
+        </div>
+        <!-- //tittle heading -->
+        <div class="checkout-right">
+
+            <div class="table-responsive">
+                <table class="timetable_sub">
+                    <thead>
+                        <tr>
+                            <th style="width:30%">Sản phẩm</th>
+                            <th>Số lượng</th>
+                            <th>Đơn giá</th>
+                            <th>Số tiền</th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (Shop s in ViewBag.Shops)
+                        {
+                            <tr class="product-shop productHead-@s.ID" data-shop="@s.ID">
+
+                                <td colspan="6"><h5>@s.ShopName</h5> Được gửi từ (<b>@s.WardName, @s.DistrictName, @s.CityName</b> đến<b> @DiaChiNhanHang.ApartmentNumber, @DiaChiNhanHang.Ward, @DiaChiNhanHang.District, @DiaChiNhanHang.City</b>)</td>
+                            </tr>
+                            foreach (MyCart x in ViewBag.SanPhamsOrder)
+                            {
+                                if (x.Product.ShopID == s.ID)
+                                {
+
+                                    <tr class="rem1 product-item product-@x.ID product-@s.ID" data-cartid="@x.ID" data-id="@x.ProductID" data-shopitem="@s.ID" data-qty="@x.Quantity">
+                                        <td class="invert-image">
+                                            <a href="/chi-tiet-san-pham?id=@x.Product.ID&name=@x.Product.Title">
+                                                <div class="row">
+                                                    <div class="col-3"><img src="/images/@x.Product.Image"></div>
+                                                    <div class="col-9">@x.Product.Title</div>
+                                                </div>
+
+                                            </a>
+                                        </td>
+                                        <td class="invert text-center">
+                                            <span class="qty-@x.ID" data-qty="@x.Quantity">@x.Quantity</span>
+                                        </td>
+                                        <td class="invert text-center"><p3><del style="opacity:0.5;">₫@string.Format("{0:#,###}", x.Product.OldPrice)</del></p3> <p3>₫@string.Format("{0:#,###}", x.Product.Price)</p3></td>
+                                        <td class="invert text-center"><span class="txtThanhTien-@x.ID" data-price="@(x.Product.Price*x.Quantity)">₫@string.Format("{0:#,###}", x.Quantity * x.Product.Price)</span></td>
+
+                                    </tr>
+
+                                }
+
+                            }
+                            <tr>
+                                <input type="hidden" class="feeToShop" id="feeToShop-@s.ID" />
+                                <td colspan="6">Phí vận chuyển: <span class="h6 totalMoney  feeToShopText  feeShip-@s.ID" style="color: #F45C5D;">₫@string.Format("{0:#,###}", ViewBag.totalMoney)</span></td>
+                            </tr>
+                        }
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="checkout-left">
+            <div class="address_form_agile mt-sm-5 mt-4">
+
+                <hr />
+                <div style="width: 100%;" class="row ml-0">
+                    <div class="col-8"></div>
+                    <div class="col-2">
+                        <p class="p3">Tổng Tiền Hàng:</p>
+                        <p class="p3">Phí Vận Chuyển:</p>
+                        <p class="p3">Tổng Thanh Toán <fieldset class="TotalSP"></fieldset></p>
+                    </div>
+                    <div class="col-2">
+                        <p class="p3 MoneyTotal" id="MoneyTotal" data-mtotal="0đ">₫@string.Format("{0:#,###}", ViewBag.totalMoney)</p>
+                        <p class="p3 feeToShopTextTotal">₫0</p>
+                        <p class="h5 totalMoney" style="color: #F45C5D;">₫@string.Format("{0:#,###}", ViewBag.totalMoney)</p>
+                    </div>
+                </div>
+                <hr />
+                <div style="width: 100%;" class="row">
+                    <div class="col-8"></div>
+                    <div class="col-4 row">
+                        <div class="checkout-right-basket checkout col-12">
+                            <a href="#" class="btn-buy-now btnDatHang col-12 text-center">
+                                <i class="fa fa-check-circle-o"></i> Đặt hàng
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- //checkout page -->
+<!-- middle section -->
+<div class="join-w3l1 py-sm-5 py-4">
+    <div class="container py-xl-4 py-lg-2">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="join-agile text-left p-4">
+                    <div class="row">
+                        <div class="col-sm-7 offer-name">
+                            <h6>Smooth, Rich & Loud Audio</h6>
+                            <h4 class="mt-2 mb-3">Branded Headphones</h4>
+                            <p>Sale up to 25% off all in store</p>
+                        </div>
+                        <div class="col-sm-5 offerimg-w3l">
+                            <img src="images/off1.png" alt="" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mt-lg-0 mt-5">
+                <div class="join-agile text-left p-4">
+                    <div class="row ">
+                        <div class="col-sm-7 offer-name">
+                            <h6>A Bigger Phone</h6>
+                            <h4 class="mt-2 mb-3">Smart Phones 5</h4>
+                            <p>Free shipping order over $100</p>
+                        </div>
+                        <div class="col-sm-5 offerimg-w3l">
+                            <img src="images/off2.png" alt="" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- middle section -->

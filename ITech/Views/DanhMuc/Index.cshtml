@@ -1,0 +1,124 @@
+﻿@using ITech.Models;
+@{
+    ViewBag.Title = "Quản trị danh mục";
+    Layout = "~/Views/Shared/MasterQuanTri.cshtml";
+}
+
+@section script{
+    <script>
+
+        $(document).ready(function () {
+
+            $.get("/DanhMuc/pList", function (data) {
+                $('.gridview-container').html(data);
+            });
+
+            $('#btnSearch').click(function (e) {
+                e.preventDefault();
+                //var txtTen = $('#txtDMSearch').val();
+                //$.get("/DanhMuc/pList", { txtDMSearch: txtTen }, function (data) {
+                //    $('.gridview-container').html(data);
+                //});
+                var rowPerpage = $('#sltRowPerPage').val();
+                submitSearch(1, rowPerpage);
+            })
+
+
+            $('#btnThemMoi').click(function () {
+                $.get("/DanhMuc/pForm", function (data) {
+                    openModal("Thêm Mới Danh Mục", data);
+                })
+            })
+
+            
+        });
+        var remove = function (id, e) {
+            e.preventDefault();
+            createMessageBoxConfirm("Thông báo", "Bạn có chắc chắn muốn xóa nó ?", function (confirm) {
+                if (confirm == true) {
+                    $.post("/DanhMuc/pAction", { do: "delete", id: id }, function (data) {
+                        createMessageBoxUrl("", data.Message, data.Error, location.pathname);
+                    })
+                }
+            });
+
+        }
+        var edit = function (id, e) {
+            e.preventDefault();
+            $.post("/DanhMuc/pForm", { id: id, do: "edit" }, function (data) {
+                //createMessageBox("", data.Message, data.Error, "/QuanTriDanhMuc/QuanTriDanhMuc.aspx");
+                openModal("Sửa Danh Mục", data);
+            });
+        }
+
+        function submitSearch(page, rowPerPage) {
+            var txtTen = $('#txtDMSearch').val();
+            $.post("/DanhMuc/pList", { txtDMSearch: txtTen, page: page, RowPerPage: rowPerPage }, 
+                function(data) {
+                $('.gridview-container').html(data);
+            });
+        }
+    </script>
+}
+
+<div id="content">
+    <!-- Page-header start -->
+    <div class="page-header card">
+        <div class="card-block">
+            <h5 class="m-b-10">Quản lý danh mục</h5>
+            <div class="col-12 my-3">
+                <div class="row py-4">
+                    <div class="col-2">
+                        Tên danh mục
+                    </div>
+                    <div class="col-4">
+                        <input type="text" name="txtDMSearch" id="txtDMSearch" class="form-control" />
+                        <label class="message"></label>
+                    </div>
+
+                </div>
+
+
+                <div class="row py-4">
+                    <div class="col-4">
+                        <button id="btnThemMoi" class="btn btn-success"><i class="ti-plus"></i> Thêm mới</button>
+                        <button id="btnSearch" class="btn btn-danger"><i class="ti-search"></i> Tìm kiếm</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Page-header end -->
+
+
+    <hr />
+
+
+    <div class="page-body">
+        <!-- Basic table card start -->
+        <div class="card">
+            <div class="card-header">
+                <h5>Danh Sách Danh Mục</h5>
+                @*<span>use class <code>table</code> inside table element</span>*@
+                <div class="card-header-right">
+                    <ul class="list-unstyled card-option">
+                        <li><i class="fa fa-chevron-left"></i></li>
+                        <li><i class="fa fa-window-maximize full-card"></i></li>
+                        <li><i class="fa fa-minus minimize-card"></i></li>
+                        <li><i class="fa fa-refresh reload-card"></i></li>
+                        <li><i class="fa fa-times close-card"></i></li>
+                    </ul>
+                </div>
+
+            </div>
+            <div class="gridview-container">
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+

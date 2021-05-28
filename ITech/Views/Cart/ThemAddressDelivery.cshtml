@@ -1,0 +1,142 @@
+﻿<script src="~/Assets/js/util.js"></script>
+<script>
+    $(document).ready(function () {
+
+        var urlCity = "https://online-gateway.ghn.vn/shiip/public-api/master-data/province";
+        var urlDistrict = "https://online-gateway.ghn.vn/shiip/public-api/master-data/district";
+        var urlWard = "https://online-gateway.ghn.vn/shiip/public-api/master-data/ward";
+        localStorage.setItem('token', "4427424b-9ccc-11eb-9035-ae038bcc764b");
+        $.ajax({
+            type: "GET",
+            url: urlCity,
+            dataType: "json",
+            headers: { "token": localStorage.getItem('token') },
+            success: function (d) {
+                var html = "<option value=''>Tỉnh/Thành phố</option>";
+
+                d.data.sort((a, b) => (a.ProvinceName > b.ProvinceName) ? 1 : -1);
+                Object.keys(d.data).forEach(function (elm) {
+                    elm = d.data[elm];
+                    html += "<option data-name='" + elm.ProvinceName+"' value='" + elm.ProvinceID + "'>" + elm.ProvinceName + "</option>";
+                });
+                $('#ddlCity').html(html);
+
+            }
+        });
+
+        $('#ddlCity').on('change', function () {
+
+            $.ajax({
+                type: "get",
+                url: urlDistrict,
+                data: { province_id : $('#ddlCity').val() },
+                dataType: "json",
+                headers: { "token": localStorage.getItem('token') },
+                success: function (d) {
+                    console.log(d);
+                    var html = "<option value=''>Quận/Huyện</option>";
+                    d.data.sort((a, b) => (a.DistrictName > b.DistrictName) ? 1 : -1);
+                    Object.keys(d.data).forEach(function (elm) {
+                        elm = d.data[elm];
+                        html += "<option data-name='" + elm.DistrictName +"' value='" + elm.DistrictID + "'>" + elm.DistrictName + "</option>";
+                    });
+                    $('#ddlDistrict').html(html);
+
+                }
+            });
+            $('#hdCity').val($(this).find(':selected').data('name'));
+
+        })
+
+        $('#ddlDistrict').on('change', function () {
+            $.ajax({
+                type: "get",
+                url: urlWard,
+                data: { district_id : $('#ddlDistrict').val() },
+                dataType: "json",
+                headers: { "token": localStorage.getItem('token') },
+                success: function (d) {
+                    console.log(d);
+                    var html = "<option value=''>Phường/Xã</option>";
+                    d.data.sort((a, b) => (a.WardName > b.WardName) ? 1 : -1);
+                    Object.keys(d.data).forEach(function (elm) {
+                        elm = d.data[elm];
+                        html += "<option data-name='" + elm.WardName + "' value='" + elm.WardCode + "'>" + elm.WardName + "</option>";
+                    });
+                    $('#ddlWard').html(html);
+
+                }
+            });
+            $('#hdDistrict').val($(this).find(':selected').data('name'));
+        })
+
+        $('#ddlWard').on('change', function () {
+            
+            $('#hdWard').val($(this).find(':selected').data('name'));
+        })
+
+        $('.btnSubmit').click(function (e) {
+            e.preventDefault();
+           
+            if ($('#frmThemDiaChi').valid()) {
+
+                var dt = $("#frmThemDiaChi").find("input,textarea,select,hidden").not("#__VIEWSTATE,#__EVENTVALIDATION, #__VIEWSTATEGENERATOR").serialize();
+                $.post("Cart/ThemAddressDelivery_POST", dt, function (d) {
+                    
+                    createCloseMessageBox("Thông báo", d.Message, d.Error);
+                   
+                    
+                })
+            }
+            return false;
+
+        })
+    })
+</script>
+
+<div class="container">
+    
+    <div class="message-alert"></div>
+    <form id="frmThemDiaChi">
+        <input type="hidden" id="hdCity" />
+        <input type="hidden" id="hdDistrict" />
+        <input type="hidden" id="hdWard" />
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Họ tên người nhận hàng" name="Cus_name" required="">
+        </div>
+        <div class="form-group">
+            <input type="tel" class="form-control" placeholder="Số điện thoại người nhận" name="Cus_phone" required="">
+        </div>
+        <div class="form-group">
+            <select id="ddlCity" class="form-control" required>
+
+                <option value="">Tỉnh/Thành phố</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <select id="ddlDistrict" class="form-control" required>
+                <option value="">Quận/Huyện</option>
+
+            </select>
+        </div>
+        <div class="form-group">
+            <select id="ddlWard" class="form-control" required>
+                <option value="">Phường/Xã</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Tòa nhà, tên đường" name="ApartmentNumber" required="">
+        </div>
+        <div class="form-group">
+            <input type="checkbox" name="Default"> Đặt làm địa chỉ mặc định
+        </div>
+        <div class="right-w3l">
+            <button class="btn btn-danger btnSubmit"><i class="fa fa-plus-circle"></i> Thêm mới</button>
+
+        </div>
+
+
+    </form>
+
+</div>

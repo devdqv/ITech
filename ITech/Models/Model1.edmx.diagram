@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="8673a5a73de54aba9be4fc6870a25801" Name="Diagram1" ZoomLevel="72">
+        <EntityTypeShape EntityType="ITechModel.AddressDeliver" Width="1.5" PointX="3" PointY="5.125" />
+        <EntityTypeShape EntityType="ITechModel.Administrator" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ITechModel.Cate_Specs" Width="1.5" PointX="10.5" PointY="14.75" />
+        <EntityTypeShape EntityType="ITechModel.Category" Width="1.5" PointX="8.25" PointY="16.25" />
+        <EntityTypeShape EntityType="ITechModel.Comment" Width="1.5" PointX="7.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ITechModel.Evaluate" Width="1.5" PointX="9.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ITechModel.Follow" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ITechModel.Gallery" Width="1.5" PointX="7.5" PointY="13.25" />
+        <EntityTypeShape EntityType="ITechModel.MyCart" Width="1.5" PointX="7.5" PointY="21.625" />
+        <EntityTypeShape EntityType="ITechModel.OrderDetail" Width="1.5" PointX="7.5" PointY="9.5" />
+        <EntityTypeShape EntityType="ITechModel.Order" Width="1.5" PointX="5.25" PointY="3.5" />
+        <EntityTypeShape EntityType="ITechModel.Product_Category" Width="1.5" PointX="10.5" PointY="11.5" />
+        <EntityTypeShape EntityType="ITechModel.Product" Width="1.5" PointX="5.25" PointY="9.375" />
+        <EntityTypeShape EntityType="ITechModel.Shop" Width="1.5" PointX="3" PointY="10.625" />
+        <EntityTypeShape EntityType="ITechModel.Specification" Width="1.5" PointX="8.25" PointY="6.625" />
+        <EntityTypeShape EntityType="ITechModel.SpecValue" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ITechModel.User" Width="1.5" PointX="0.75" PointY="8.75" />
+        <AssociationConnector Association="ITechModel.FK_AddressDelivers_Users" />
+        <AssociationConnector Association="ITechModel.FK_Cate_Specs_Categories" />
+        <AssociationConnector Association="ITechModel.FK_Cate_Specs_Specifications" />
+        <AssociationConnector Association="ITechModel.FK_Product_Category_Categories" />
+        <AssociationConnector Association="ITechModel.FK_Galleries_Products" />
+        <AssociationConnector Association="ITechModel.FK_MyCarts_Products" />
+        <AssociationConnector Association="ITechModel.FK_OrderDetails_Orders" />
+        <AssociationConnector Association="ITechModel.FK_OrderDetails_Products" />
+        <AssociationConnector Association="ITechModel.FK_Product_Category_Products" />
+        <AssociationConnector Association="ITechModel.FK_Products_Shops" />
+        <AssociationConnector Association="ITechModel.FK_Shops_Users" />
+        <EntityTypeShape EntityType="ITechModel.Keyword" Width="1.5" PointX="10.375" PointY="3.75" />
+        <EntityTypeShape EntityType="ITechModel.Product_Spec" Width="1.5" PointX="10.5" PointY="8.25" />
+        <AssociationConnector Association="ITechModel.FK_Product_Spec_Products" />
+        <AssociationConnector Association="ITechModel.FK_Product_Spec_Specifications" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

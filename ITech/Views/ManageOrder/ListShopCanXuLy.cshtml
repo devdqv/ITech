@@ -1,0 +1,75 @@
+﻿@using ITech.Models;
+@{
+    ITechEntities db = new ITechEntities();
+}
+
+@{
+    var user = Session["user"] as User;
+}
+
+@{
+    ViewBag.Title = "Quản lý đơn hàng";
+    Layout = "~/Views/Shared/MasterBanHang.cshtml";
+}
+
+@section script{
+    <script>
+        $(document).ready(function () {
+
+
+        })
+
+    </script>
+}
+
+@{ 
+    int type = ViewBag.type;
+}
+<div class="page-header card">
+    <div class="card-block">
+        <div class="col-lg-12 col-12 col-xl-12">
+            <div class="sub-title">DANH SÁCH CỬA HÀNG</div>
+
+            <div class="gridview-container">
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Ảnh</th>
+                            <th>Cửa hàng</th>
+                            <th>Địa chỉ</th>
+                            <th class="text-center">Chi tiết đơn hàng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var x in ViewBag.lstShop as List<Shop>)
+                        {
+                            var count = db.Orders.Where(t => t.ShopID == x.ID && t.Status == type).Count();
+                            if(count>0)
+                            {
+
+                           
+                            <tr>
+                                <th><img src="/images/commons/@x.Avatar" width="50px" /></th>
+                                <th><a href="/danh-sach-don-hang-cua-hang?shopID=@x.ID">@x.ShopName</a></th>
+                                <th>@x.WardName , @x.DistrictName , @x.CityName</th>
+
+                                <th class="text-center"><a href="/danh-sach-don-hang-cua-hang?shopID=@x.ID&type=@type">Xem đơn hàng <span class="red"> (@(count))</span></a></th>
+                            </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

@@ -1,0 +1,134 @@
+﻿
+@{
+    ViewBag.Title = "Danh sách gian hàng";
+    Layout = "~/Views/Shared/MasterBanHang.cshtml";
+}
+@using ITech.Models;
+@using PagedList;
+@using PagedList.Mvc;
+
+@model IPagedList<Shop>
+
+
+@section script{
+    <script>
+
+        $(document).ready(function () {
+            $('.btnSearch').click(function (e) {
+                e.preventDefault();
+                var TenCH = $("#TenCH").val();
+                location.href = '/quan-tri-san-pham?TenCH=' + TenCH;
+
+            })
+        })
+
+        var remove = function (id) {
+            createMessageBoxConfirm("Thông báo", "Bạn có chắc chắn muốn xóa nó ?", function (confirm) {
+                if (confirm == true) {
+                    $.post("/Shop/Delete", { id: id }, function (data) {
+                        createMessageBoxUrl("", data.Message, data.Error, location.pathname);
+                    })
+                }
+            });
+            return false;
+        }
+
+        var edit = function (id) {
+            location.href = "/cap-nhat-gian-hang?id=" + id;
+            return false;
+        }
+
+        var lockShop = function (id, stt) {
+            var msg = '';
+            if (stt == '@HangSo.DaDuyet') {
+                msg = 'Bạn muốn khóa cửa hàng này?';
+            }
+            else if (stt == '@HangSo.KhoaByShop') {
+                msg = 'Bạn muốn mở khóa cửa hàng này?';
+            }
+            createMessageBoxConfirm("Thông báo", msg, function (confirm) {
+                if (confirm == true) {
+                    $.post("/Shop/ChangeStatusShop", { id: id }, function (data) {
+                        createMessageBoxUrl("", data.Message, data.Error, location.pathname);
+                    })
+                }
+            });
+            return false;
+        }
+
+
+
+    </script>
+}
+
+<div class="page-header card">
+    <div class="card-block table-border-style">
+        <div class="sub-title">Tìm kiếm</div>
+        Tên gian hàng <input placeholder="Nhập tên gian hàng cần tìm..." id="TenCH" type="text" value="@ViewBag.TenCH" class="form-control" />
+        <button type="submit" class="btn btn-primary mt-2 btnSearch"><i class="fa fa-search"></i> Tìm kiếm</button>
+    </div>
+</div>
+<div class="page-header card">
+    <div class="card-block table-border-style">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Ảnh</th>
+                        <th>Tên gian hàng</th>
+                        <th>Địa chỉ</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Count == 0)
+                    {
+                        <tr>
+                            <th colspan="5" class="text-center">Không có dữ liệu</th>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var x in Model)
+                        {
+                            <tr>
+                                <th><img src="/images/commons/@x.Avatar" width="50px" /></th>
+                                <th>@x.ShopName</th>
+                                <th>@x.WardName , @x.DistrictName , @x.CityName</th>
+                                <th>@(x.Status == HangSo.ChoDuyet ? "Chờ xác nhận" : x.Status == HangSo.DaDuyet ? "Đang hoạt động" : x.Status == HangSo.KhoaByShop ? "Đã được khóa bởi người dùng" : x.Status == HangSo.KhoaByAdmin ? "Được khóa bởi quản trị viên" : "" )</th>
+
+                                <th>
+                                    @if (x.Status == HangSo.DaDuyet)
+                                    {
+                                        <span onclick="return lockShop('@x.ID', '@HangSo.DaDuyet')" title="Tạm khóa cửa hàng" class="outer-ellipsis">
+                                            <i class="fa fa-lock fa-2x"></i>
+                                        </span>
+                                    }
+                                    else if(x.Status == HangSo.KhoaByShop)
+                                    {
+                                        <span onclick="return lockShop('@x.ID', '@HangSo.KhoaByShop')" title="Mở khóa cửa hàng" class="outer-ellipsis">
+                                            <i class="fa fa-unlock-alt fa-2x"></i>
+                                        </span>
+                                    }
+                                    <span onclick="return edit('@x.ID')" title="Sửa bản ghi" class="outer-ellipsis">
+                                        <i class="fa fa-edit fa-2x color-add-cart"></i>
+                                    </span>
+                                    <span class="outer-ellipsis" onclick="return remove('@x.ID')" title="Xóa bản ghi">
+                                        <i class="fa fa-trash fa-2x color-buy-now"></i>
+                                    </span>
+
+                                </th>
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+            </table>
+
+
+            @Html.PagedListPager(Model, page => Url.Action("ListGianHang", new { page, TenCH = ViewBag.TenCH }))
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,108 @@
+﻿
+@using ITech.Models;
+
+@{
+    ViewBag.Title = "So sánh sản phẩm";
+    Layout = "~/Views/Shared/MasterKH.cshtml";
+}
+
+
+@{
+    Product product1 = ViewBag.SP1;
+    Product product2 = ViewBag.SP2;
+    List<Specification> ThongSoSP = ViewBag.ThongSoSP;
+    List<Product_Spec> ThongSoSP1 = ViewBag.ThongSoSP1;
+    List<Product_Spec> ThongSoSP2 = ViewBag.ThongSoSP2;
+}
+
+<!-- banner-2 -->
+<div class="page-head_agile_info_w3l">
+
+</div>
+<!-- //banner-2 -->
+<!-- page -->
+<div class="services-breadcrumb">
+    <div class="agile_inner_breadcrumb">
+        <div class="container">
+            <ul class="w3_short">
+                <li>
+                    <a href="/trang-chu">Trang chủ</a>
+                    <i>|</i>
+                </li>
+                <li>So sánh sản phẩm <a href="/chi-tiet-san-pham?id=@product1.ID" class="color-add-cart">@product1.Title</a> với <a href="/chi-tiet-san-pham?id=@product2.ID" class="color-add-cart">@product2.Title</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- //page -->
+<!-- Single Page -->
+<div class="banner-bootom-w3-agileits py-5">
+    <div class="container py-xl-4 py-lg-2">
+        <!-- tittle heading -->
+        <!-- <h3 class="tittle-w3l text-center mb-lg-5 mb-sm-4 mb-3">
+            <span>S</span>ingle
+            <span>P</span>age</h3> -->
+        <!-- //tittle heading -->
+
+        <table class="table table-bordered">
+            <tr>
+                <td style="width:20%;"></td>
+                <td style="width:40%;">
+                    <div class="row">
+                        <div class="col-12">
+                            <a href="/chi-tiet-san-pham?id=@product1.ID">
+                                <img style="width:100%;" src="/images/@product1.Image" />
+                                <h5>@product1.Title</h5>
+                                <p class="h6 totalMoney" style="color: #F45C5D;">₫@string.Format("{0:#,###}", product1.Price) <del style="color:black;">₫@string.Format("{0:#,###}", product1.OldPrice)</del></p>
+                            </a>
+                                </div>
+                    </div>
+                </td>
+
+                <td style="width:40%;">
+                    <div class="row">
+                        <div class="col-12">
+                            <a href="/chi-tiet-san-pham?id=@product2.ID">
+                                <img style="width:100%;" src="/images/@product2.Image" />
+                                <h5>@product2.Title</h5>
+                                <p class="h6 totalMoney" style="color: #F45C5D;">₫@string.Format("{0:#,###}", product2.Price) <del style="color:black;">₫@string.Format("{0:#,###}", product2.OldPrice)</del></p>
+                       </a>
+                                </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3"><p class="h4">Cấu hình sản phẩm</p></td>
+            </tr>
+
+
+            @foreach (Specification x in ThongSoSP)
+            {
+            <tr>
+                <td style="width:20%;">@x.Name</td>
+                @foreach (Product_Spec x1 in ThongSoSP1)
+                {
+                    if (x1.SpecID == x.ID)
+                    {
+                        <td style="width:40%;">@(x1.Value.Trim()==""?"Không": x1.Value.Trim())</td>
+                        break;
+                    }
+                }
+
+                @foreach (Product_Spec x2 in ThongSoSP2)
+                {
+                    if (x2.SpecID == x.ID)
+                    {
+            <td style="width:40%;">@(x2.Value.Trim()==""?"Không": x2.Value.Trim())</td>
+                        break;
+                    }
+                }
+            </tr>
+            }
+
+
+
+        </table>
+    </div>
+
+</div>

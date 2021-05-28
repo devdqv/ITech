@@ -1,0 +1,164 @@
+﻿
+@{
+    ViewBag.Title = "Danh sách gian hàng";
+    Layout = "~/Views/Shared/MasterQuanTri.cshtml";
+}
+@using ITech.Models;
+@using PagedList;
+@using PagedList.Mvc;
+
+@model IPagedList<Shop>
+
+
+@section script{
+    <script>
+
+        $(document).ready(function () {
+            $('.btnSearch').click(function (e) {
+                e.preventDefault();
+                var TenCH = $("#TenCH").val();
+                var tt = $("#ddlTragThai").val();
+                location.href = '/quan-tri-gian-hang-nguoi-dung?TenCH=' + TenCH+'&tt='+ tt;
+
+            })
+
+            $('#ddlTragThai').val('@ViewBag.TrangThai');
+        })
+
+        var remove = function (id) {
+            createMessageBoxConfirm("Thông báo", "Bạn có chắc chắn muốn xóa nó ?", function (confirm) {
+                if (confirm == true) {
+                    $.post("/ManageShopAd/Delete", { id: id }, function (data) {
+                        createMessageBoxUrl("", data.Message, data.Error, location.pathname);
+                    })
+                }
+            });
+            return false;
+        }
+
+        
+        var lockShop = function (id, stt) {
+            var msg = '';
+            if (stt == '@HangSo.DaDuyet') {
+                msg = 'Bạn muốn khóa cửa hàng này?';
+            }
+            else if (stt == '@HangSo.KhoaByAdmin') {
+                msg = 'Bạn muốn mở khóa cửa hàng này?';
+            }
+            createMessageBoxConfirm("Thông báo", msg, function (confirm) {
+                if (confirm == true) {
+                    $.post("/ManageShopAd/ChangeStatusShop", { id: id }, function (data) {
+                        createMessageBoxUrl("", data.Message, data.Error, location.pathname);
+                    })
+                }
+            });
+            return false;
+        }
+
+         var DuyetShop = function (id) {
+           
+            createMessageBoxConfirm("Thông báo", "Bạn muốn duyệt cửa hàng này ?", function (confirm) {
+                if (confirm == true) {
+                    $.post("/ManageShopAd/DuyetShop", { id: id }, function (data) {
+                        createMessageBoxUrl("", data.Message, data.Error, location.pathname);
+                    })
+                }
+            });
+            return false;
+        }
+
+
+
+    </script>
+}
+
+<div class="page-header card">
+    <div class="card-block table-border-style">
+        <div class="sub-title">Tìm kiếm</div>
+        <div class="row">
+            <div class="col-12 col-md-6">
+                Tên gian hàng <input placeholder="Nhập tên gian hàng cần tìm..." id="TenCH" type="text" value="@ViewBag.TenCH" class="form-control" />
+
+            </div>
+            <div class="col-12 col-md-6">
+                Trạng thái 
+                <select id="ddlTragThai" class="form-control">
+                    <option value="0">Tất cả</option>
+                    <option value="2">Đang hoạt động</option>
+                    <option value="1">Chờ duyệt</option>
+                    <option value="5">Đã được khóa bởi người quản trị</option>
+                    <option value="4">Đã được khóa bởi người dùng</option>
+                </select>
+
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2 btnSearch"><i class="fa fa-search"></i> Tìm kiếm</button>
+    </div>
+</div>
+<div class="page-header card">
+    <div class="card-block table-border-style">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Ảnh</th>
+                        <th>Tên gian hàng</th>
+                        <th>Địa chỉ</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Count == 0)
+                    {
+                        <tr>
+                            <th colspan="5" class="text-center">Không có dữ liệu</th>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var x in Model)
+                        {
+                            <tr>
+                                <th><img src="/images/commons/@x.Avatar" width="50px" /></th>
+                                <th>@x.ShopName</th>
+                                <th>@x.WardName , @x.DistrictName , @x.CityName</th>
+                                <th>@(x.Status == HangSo.ChoDuyet ? "Chờ xác nhận" : x.Status == HangSo.DaDuyet ? "Đang hoạt động" : x.Status == HangSo.KhoaByShop ? "Đã được khóa bởi người dùng" : x.Status == HangSo.KhoaByAdmin ? "Được khóa bởi quản trị viên" : "" )</th>
+
+                                <th>
+                                    @if (x.Status == HangSo.KhoaByAdmin)
+                                    {
+                                        <span onclick="return lockShop('@x.ID', '@HangSo.KhoaByAdmin')" title="Mở khóa cửa hàng" class="outer-ellipsis">
+                                            <i class="fa fa-lock-open fa-2x"></i>
+                                        </span>
+                                    }
+                                    else if (x.Status == HangSo.DaDuyet || x.Status == HangSo.KhoaByShop)
+                                    {
+                                        <span onclick="return lockShop('@x.ID', '@HangSo.DaDuyet')" title="Tạm khóa cửa hàng" class="outer-ellipsis">
+                                            <i class="fa fa-lock fa-2x"></i>
+                                        </span>
+                                    }
+                                    else if (x.Status == HangSo.ChoDuyet)
+                                    {
+                                        <span onclick="return DuyetShop('@x.ID')" title="CHo phép cửa hàng đi vào hoạt động" class="outer-ellipsis">
+                                            <i class="fa fa-check-circle fa-2x color-add-cart"></i>
+                                        </span>
+                                    }
+                                    <span class="outer-ellipsis" onclick="return remove('@x.ID')" title="Xóa bản ghi">
+                                        <i class="fa fa-trash fa-2x color-buy-now"></i>
+                                    </span>
+
+                                </th>
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+            </table>
+
+
+            @Html.PagedListPager(Model, page => Url.Action("ListGianHang", new { page, TenCH = ViewBag.TenCH, tt = ViewBag.TrangThai }))
+        </div>
+    </div>
+</div>
+

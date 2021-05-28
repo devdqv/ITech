@@ -1,0 +1,41 @@
+﻿@using ITech.Models;
+@model List<Category>
+
+<div class="card-block table-border-style">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Tên danh mục</th>
+                    <th>Ảnh</th>
+                    <th>Danh mục cha</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody> 
+                @foreach (var x in Model)
+                { 
+                    <tr> 
+                        <th>@x.Name</th>
+                        <th><img src="~/images/commons/@x.Image" width="50px" height="50px" /></th>
+                        <th> @(x.ParentCode==0?"Không": ITech.GetObj.GetCategory(x.ParentCode.Value).Name) </th>
+                        <th>
+                            <span onclick="return edit('@x.ID', event)" title="Sửa bản ghi @x.Name" class="outer-ellipsis">
+                                <i class="ti-pencil"></i>
+                            </span>
+                            <span class="outer-ellipsis" onclick="return remove('@x.ID', event)" title="Xóa bản ghi @x.Name">
+                                <i class="ti-trash"></i>
+                            </span>
+
+                        </th>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+        <div id="ltlPage">@Html.Raw(ViewBag.ltlPage)</div>
+        @*Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+
+            @Html.PagedListPager(Model, page => Url.Action("pList", new { page }))*@
+    </div>
+</div>

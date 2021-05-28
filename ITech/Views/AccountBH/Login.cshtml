@@ -1,0 +1,138 @@
+﻿@using ITech.Models;
+@{ 
+    Layout = null;
+}
+
+@{ 
+    var user = ViewBag.model as User;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>TRANG ĐĂNG NHẬP NGƯỜI BÁN HÀNG</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" href="/assets/login/images/icons/favicon.ico" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/assets/login/vendor/bootstrap/css/bootstrap.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/assets/login/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/assets/login/vendor/animate/animate.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/assets/login/vendor/css-hamburgers/hamburgers.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/assets/login/vendor/select2/select2.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/assets/login/css/util.css">
+    <link rel="stylesheet" type="text/css" href="/assets/login/css/main.css">
+    <link href="~/Assets/assets/icon/themify-icons/themify-icons.css" rel="stylesheet" />
+    <!--===============================================================================================-->
+</head>
+<body>
+
+    <div class="limiter">
+        <div class="container-login100">
+            <div class="container-fluid">
+                <nav class="nav">
+                    <a class="nav-link active" href="/"><i class="fa fa-arrow-left"></i> Trang chủ ITech</a>
+                </nav>
+            </div>
+            <div class="wrap-login100">
+                <div style="width:35%;">
+                    <h3 class="text-danger font-weight-bold">Bán hàng chuyên nghiệp</h3>
+                    <br />
+
+                    <h5>Quản lý shop của bạn một cách hiệu quả hơn trên ITech với Itech - Kênh Người bán</h5>
+                    <br />
+                    <img width="100%" src="/images/commons/banhang.jpg" alt="IMG">
+                </div>
+                @using (Html.BeginForm("Login", "AccountBH", FormMethod.Post, new { @class = "login100-form validate-form" }))
+                {
+                    @*<form class="md-float-material">*@
+                    @Html.AntiForgeryToken()
+
+                    <span class="login100-form-title h3">
+                        Đăng nhập vào Kênh người bán
+                    </span>
+
+                    @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+                    <div class="wrap-input100 validate-input" data-validate="">
+                        <input class="input100" type="text" name="Email"  value="@(user==null?"":user.Email)" placeholder="Nhập email...">
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-envelope" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input" data-validate="Không được bỏ trống mật khẩu">
+                        <input class="input100" type="password" value="@(user==null?"":user.Password)" name="Password" placeholder="Mật khẩu">
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-lock" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <div class="container-login100-form-btn">
+                        <button class="login100-form-btn">
+                            Đăng nhập
+                        </button>
+                    </div>
+                    <div class="container-login100-form-btn">
+                        <span class="login100-form-btn-primary">
+
+                            <a style="color:white;" href="/Account/Facebook"><i class="ti-facebook"></i>&nbsp; Tiếp tục với Facebook</a>
+                        </span>
+                    </div>
+                    @*<div class="container-login100-form-btn">
+                <span class="btn btn-success">
+                    //@Html.ActionLink("Tiếp tục với facebook","Facebook", "Account")
+                </span>
+            </div>*@
+
+
+                    <div class="text-center p-t-12">
+                        <span class="txt1">
+                            Quên
+                        </span>
+                        <a class="txt2" href="#">
+                            Tài khoản / Mật khẩu?
+                        </a>
+                    </div>
+
+                    <div class="text-center p-t-136">
+                        <a class="txt2" href="#">
+                            Tạo tài khoản
+                            <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!--===============================================================================================-->
+    <script src="/assets/login/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="/assets/login/vendor/bootstrap/js/popper.js"></script>
+    <script src="/assets/login/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="/assets/login/vendor/select2/select2.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="/assets/login/vendor/tilt/tilt.jquery.min.js"></script>
+    <script>
+        $('.js-tilt').tilt({
+            scale: 1.1
+        })
+    </script>
+    <!--===============================================================================================-->
+    <script src="/assets/login/js/main.js"></script>
+    <script src="/Assets/login/js/facebook.js"></script>
+
+
+</body>
+</html>

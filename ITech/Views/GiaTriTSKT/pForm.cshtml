@@ -1,0 +1,301 @@
+﻿@using ITech.Models;
+@{
+    SpecValue obj = ViewBag.obj;
+}
+<script src="~/Assets/js/util.js"></script>
+<script>
+    var urlGetListSpecValue = "/GiaTriTSKT/getSpecificationsByCategory";
+
+    $(document).ready(function () {
+        var tskt = '@(obj==null?-1:obj.SpecID)';
+        console.log(tskt)
+        IDasName();
+
+        $('.chkAllDanhMuc').click(function () {
+            $('input[name="chkDanhMuc"]').prop("checked", $(this).is(':checked'));
+            LoadTSKT();
+
+        })
+
+        $('.chkAllTSKT').click(function () {
+            $('input[name="chkTSKT"]').prop("checked", $(this).is(':checked'));
+
+
+        })
+
+        $('.chkDanhMuc').click(function () {
+            LoadTSKT();
+        })
+        var ValueChoose = '';
+
+        $('.select2-selection__rendered').attr('style', ' background: none;padding:0px;')
+
+        $(document).off("change", "#ddlDMCap1").on("change", "#ddlDMCap1", function (event) {
+            $.post(urlGetListSpecValue, { ID: $(this).val() }, function (data) {
+                $('#ddlTSKT').html(data);
+            })
+        })
+        $("#ddlDMCap1").trigger("change");
+
+        $('#btnAddValue').click(function (e) {
+            e.preventDefault();
+            if ($('#txtGiaTri').val().trim() == "") {
+                createMessageBox("", "Bạn phải nhập giá trị !", "info")
+                return false;
+            }
+            ValueChoose = '<option value="' + $('#txtGiaTri').val() + '">' + $('#txtGiaTri').val() + " " + $('#txtDVT').val() + '</option>';
+            $('#ddlValueChoose').append(ValueChoose);
+            $('#txtGiaTri').val('');
+        })
+
+        $('#btnRemove').click(function (e) {
+            e.preventDefault();
+            $('#ddlValueChoose option:selected').remove();
+        })
+        $('#btnSubmit').click(function (e) {
+            e.preventDefault();
+            var lstChoose = '';
+
+            $("#ddlValueChoose option").each(function () {
+                // Add $(this).val() to your list
+                lstChoose += $(this).val() + ';';
+            });
+            $('#ValueChoose').val(lstChoose);
+            if (!validate())
+                return false;
+            if ($("#ddlValueChoose option").length == 0) {
+                createMessageBox("", "Bạn phải thêm giá trị!", "info")
+                return false;
+            }
+            var itemID = '';
+            $('input[name="chkTSKT"]:checked').each(function () {
+                itemID += $(this).val() + "-" + $(this).data('category') + ";";
+            })
+            $('#itemID').val(itemID);
+            var dt = $("#frmThemDanhMuc").find("input,textarea,select,hidden").not("#__VIEWSTATE,#__EVENTVALIDATION, #__VIEWSTATEGENERATOR").serializeArray();
+            $.post("GiaTriTSKT/pAction", dt, function (data) {
+                if (data.Error) {
+                    createMessageBox("", data.Message, data.Error);
+                }
+                else {
+                    createMessageBoxUrl("", data.Message, data.Error, location.pathname);
+
+                }
+            })
+
+        })
+
+        if (tskt != "-1") {
+            var itemID = [];
+            $('input[name="chkDanhMuc"]:checked').each(function () {
+                itemID.push($(this).val());
+            })
+            $.post("/GiaTriTSKT/GetListTSKTEdit", { itemID: JSON.stringify(itemID) }, function (data) {
+                var html = '';
+
+                Object.keys(data).forEach(function (el) {
+                    el = data[el];
+                    if (el.ID == -1) {
+                        html += "<br/> ---" + el.Name + "---<br/>";
+                    }
+                    else {
+
+                        if ($('#itemIdTSKT').val() != '-1') {
+                            if ($('#itemIdTSKT').val() == el.ID) {
+                                html += '<input type="checkbox" checked disabled class="chkTSKT" data-category="' + el.CategoryID + '" name="chkTSKT" value="' + el.ID + '" /> ' + el.Name + ' <br />';
+
+                            }
+
+
+                        }
+                        else {
+
+                            html += '<input type="checkbox" class="chkTSKT" data-category="' + el.CategoryID + '" name="chkTSKT" value="' + el.ID + '" /> ' + el.Name + ' <br />';
+
+                        }
+
+
+                    }
+
+                });
+                $('.lstTSKT').html(html);
+            })
+        }
+        })
+
+
+    function LoadTSKT() {
+        var itemID = [];
+        $('input[name="chkDanhMuc"]:checked').each(function () {
+            itemID.push($(this).val());
+        })
+        $.post("/GiaTriTSKT/GetListTSKT", { itemID: JSON.stringify(itemID) }, function (data) {
+            var html = '';
+
+            Object.keys(data).forEach(function (el) {
+                el = data[el];
+                if (el.ID == -1) {
+                    html += "<br/> ---" + el.Name + "---<br/>";
+                }
+                else {
+
+                    if ($('#itemIdTSKT').val() != '-1') {
+                        if ($('#itemIdTSKT').val() == el.ID) {
+                            html += '<input type="checkbox" checked disabled class="chkTSKT" data-category="' + el.CategoryID + '" name="chkTSKT" value="' + el.ID + '" /> ' + el.Name + ' <br />';
+
+                        }
+
+
+                    }
+                    else {
+
+                        html += '<input type="checkbox" class="chkTSKT" data-category="' + el.CategoryID + '" name="chkTSKT" value="' + el.ID + '" /> ' + el.Name + ' <br />';
+
+                    }
+
+
+                }
+
+            });
+            $('.lstTSKT').html(html);
+        })
+    }
+</script>
+<form id="frmThemDanhMuc">
+    <input type="hidden" id="do" name="do" value="@ViewBag.DoAction" />
+    <input type="hidden" id="ValueChoose" name="ValueChoose" />
+    <input type="hidden" id="id" name="id" value="@ViewBag.ArrID" />
+    <input type="hidden" id="itemID" name="itemID" />
+    <input type="hidden" id="itemIdTSKT" name="itemIdTSKT" value=@(obj==null?-1:obj.SpecID.Value) />
+    <div class="page-header card">
+        <div class="card-block">
+            <div class="col-12 my-3">
+                <div class="row py-4">
+
+
+
+                    <div class="col-4">
+                        Danh Mục <br /><hr />
+                        @if (obj == null)
+                        {
+                            <fieldset>
+                                <input type="checkbox" class="chkAllDanhMuc" /> Tất cả <br />
+                            </fieldset>
+
+                        }
+                        <div class="container-fluid">
+
+
+                            @foreach (Category x in ViewBag.lstDM)
+                            {
+                                if (obj != null)
+                                {
+                                    if (obj.CategoryID == x.ID)
+                                    {
+                                        <input type="checkbox" disabled checked class="chkDanhMuc" name="chkDanhMuc" value="@x.ID" /> @x.Name <br />
+
+                                    }
+
+                                }
+                                else
+                                {
+                                    <input type="checkbox" class="chkDanhMuc" name="chkDanhMuc" value="@x.ID" /> @x.Name <br />
+
+                                }
+
+                            }
+
+                        </div>
+                        @*<select id="ddlDMCap1" class="form-control">
+                                <option value="0">--Tất cả--</option>
+                                @foreach (Category x in ViewBag.lstDM)
+                                {
+
+
+                                    if (obj == null ? false : (obj.CategoryID == x.ID ? true : false))
+                                    {
+                                        <option selected="selected" value="@x.ID">@x.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@x.ID">@x.Name</option>
+                                    }
+
+                                }
+                            </select>*@
+                        <br />
+                        <hr />
+                    </div>
+
+                    <div class="col-4">
+                        Thông số <br /><hr />
+                        @if (obj == null)
+                        {
+                            <fieldset>
+                                <input type="checkbox" class="chkAllTSKT" /> Tất cả <br />
+                            </fieldset>
+
+                        }
+
+                        <div class="container-fluid lstTSKT">
+                        </div>
+
+                        @*<select id="ddlTSKT" class="form-control">
+                            <option value="0">--Tất cả--</option>
+                            @foreach (Specification x in ViewBag.lstLoaiTS)
+                                {
+
+
+                                    if (obj == null ? false : (obj.SpecID == x.ID ? true : false))
+                                    {
+                                        <option selected="selected" value="@x.ID">@x.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@x.ID">@x.Name</option>
+                                    }
+
+                                }*@
+                        @*</select>*@
+                    </div>
+                    <div class="col-4">
+                        Giá trị <span class="red">*</span>
+                        <input type="text" id="txtGiaTri" placeholder="Nhập giá trị (VD: 10,20,...)" autocomplete="off" class="form-control" />
+                        <input type="text" id="txtDVT" placeholder="Nhập đơn vị (VD: GB, mAh,...)" autocomplete="off" class="form-control mt-2" />
+                        <button id="btnAddValue" class="btn btn-primary mt-3"><i class="fa fa-plus"></i> Thêm</button>
+                        <label class="message"></label>
+                    </div>
+
+                    <div class="col-4">
+                        Giá trị đã chọn
+                        <select id="ddlValueChoose" name="ddlValueChoose" class="form-control" size="6">
+                            @{ if (ViewBag.lstValue != null)
+                                {
+                                    foreach (string x in ViewBag.lstValue)
+                                    {
+                                        <option value="@x">@x</option>
+                                    }
+                                }
+
+                            }
+                        </select>
+                        <br />
+                        <button id="btnRemove" class="btn btn-danger"><i class="fa fa-trash-alt"></i>Xóa</button>
+                    </div>
+
+
+                </div>
+
+                <div class="row py-4">
+                    <div class="col-4">
+                        <button id="btnSubmit" class="btn btn-success"><i class="ti-save"></i> @ViewBag.strSubmit</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <hr />
+
+
+</form>

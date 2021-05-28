@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewBag.Title = "Thay đổi thông tin cá nhân";
+    Layout = "~/Views/Shared/MasterKH.cshtml";
+}
+
+@using ITech.Models;
+
+@model User
+
+@section script{
+
+    <script>
+        $(document).ready(function () {
+            $('.img-uploadA').click(function (e) {
+                e.preventDefault();
+                $("#fileuploadA").click();
+            });
+
+            $('.btnSubmit').click(function (e) {
+                e.preventDefault();
+                if ($('#frmUpdateUser').valid()) {
+
+                
+                var data = new FormData();
+                var fileA = $('#fileuploadA').get(0).files;
+
+                data.append('fileuploadA', fileA[0]);
+
+                AppendArrFormData($("#frmUpdateUser").find("input,textarea,select,hidden").not("#__VIEWSTATE,#__EVENTVALIDATION, #__VIEWSTATEGENERATOR").serializeArray(), data);
+
+
+                $.ajax({
+                    url: "/UserInfo/UpdateInfor",
+                    type: 'POST',
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    async: false,
+                    success: function (data) {
+                        createMessageBoxUrl("", data.Message, data.Error, location.href);
+                    }
+                    });
+                }
+                return false;
+            })
+
+        })
+    </script>
+}
+
+<div class="container">
+    <!-- form -->
+    <form id="frmUpdateUser" method="post">
+        <div class="contact-grids1 w3agile-6 mt-5">
+            <div class="row">
+                <div class="col-2">
+                    <div class="image-upload">
+                        <i class="fa fa-trash" @((Model.Avatar == null || Model.Avatar == "") ? "hidden" : "") onclick="removeImg2(event)"></i>
+                        <img class="img-uploadA" src='@((Model.Avatar==null || Model.Avatar=="") ? "/images/noAvatar.png" : Model.Avatar)' style="width:100px; height:100px;border:double;">
+                    </div>
+                    <input type="file" accept="image/x-png,image/gif,image/jpeg" id="fileuploadA" class="files" hidden onchange="loadImage2(event)" />
+                    <input type="hidden" name="hdfileuploadA" value="@Model.Avatar" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6  form-group">
+                    <label class="col-form-label">Họ và tên <span class="red">*</span></label>
+                    <input type="text" class="form-control" name="FullName" value="@Model.FullName" placeholder="" required="">
+
+                </div>
+                <div class="col-md-6 col-sm-6 form-group">
+                    <label class="col-form-label">Ngày sinh <span class="red">*</span></label>
+                    <input type="text" class="form-control datepicker" name="DateBirth" value="@(Model.DateOfBirth==null?"":Model.DateOfBirth.Value.ToString("dd/MM/yyyy"))" placeholder="" required="">
+                </div>
+                <div class="col-md-6 col-sm-6 contact-form1 form-group">
+                    <label class="col-form-label">Số điện thoại</label>
+                    <input type="tel" class="form-control" name="Phone" value="@Model.Phone" placeholder="">
+                </div>
+                <div class="col-md-6 col-sm-6 contact-form1 form-group">
+                    <label class="col-form-label">Giới tính</label><br />
+                    @if (Model.Gender == 1)
+                    {
+                        <fieldset>
+                            <input type="radio" name="Gender" checked value="1" />Nam
+                            <input type="radio" name="Gender" value="0" />Nữ
+                        </fieldset>
+                    }
+                    else
+                    {
+                        <fieldset>
+                            <input type="radio" name="Gender" value="1" />Nam
+                            <input type="radio" checked name="Gender" value="0" />Nữ
+                        </fieldset>
+                    }
+
+                </div>
+                <div class="col-md-6 col-sm-6 contact-form1 form-group">
+                    <label class="col-form-label">Địa chỉ</label>
+                    <input type="tel" class="form-control" name="Address" value="@Model.Address" placeholder="">
+                </div>
+            </div>
+            @*<div class="contact-me animated wow slideInUp form-group">
+                    <label class="col-form-label">Message</label>
+                    <textarea name="Message" class="form-control" placeholder="" required=""> </textarea>
+                </div>*@
+            <div class="contact-form">
+                <button type="submit" class="btn btn-success btnSubmit"><i class="fa fa-check"></i> Cập nhật</button>
+            </div>
+        </div>
+    </form>
+    <!-- //form -->
+</div>
+
